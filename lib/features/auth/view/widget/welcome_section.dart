@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
+import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/view/widget/custom_card_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
@@ -36,6 +37,9 @@ class WelcomeSection extends StatelessWidget {
                   .loginWithGoogle();
               if (result) {
                 GoRouter.of(context).push(AppRouteName.home);
+              } else {
+                print(context.read<AuthViewModel>().error);
+                ShowToast.showError(context.read<AuthViewModel>().error);
               }
             },
             iconColor: AppColors.primary,
