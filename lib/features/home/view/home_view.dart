@@ -5,6 +5,7 @@ import 'package:grocery_app/features/cart/view/cart_view.dart';
 import 'package:grocery_app/features/favorite/view/favorite_view.dart';
 import 'package:grocery_app/features/home/view/home_view_body.dart';
 import 'package:grocery_app/features/home/viewmodel/home_view_model.dart';
+import 'package:grocery_app/features/order/view/order_screen.dart';
 import 'package:grocery_app/features/profile/view/profile_view.dart';
 import 'package:provider/provider.dart';
 
@@ -35,6 +36,7 @@ class _HomeViewState extends State<HomeView> {
               const HomeViewBody(),
               const FavoriteView(),
               const CartView(),
+              const OrderScreen(),
               const ProfileView(),
             ],
           ),
@@ -51,7 +53,7 @@ class _HomeViewState extends State<HomeView> {
             showUnselectedLabels: false,
             type: BottomNavigationBarType.fixed,
 
-            items: const [
+            items: [
               BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.house),
                 label: "Home",
@@ -64,6 +66,10 @@ class _HomeViewState extends State<HomeView> {
               BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.bagShopping),
                 label: "Cart",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.clipboardCheck),
+                label: "Orders",
               ),
               BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.user),

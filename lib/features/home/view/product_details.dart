@@ -11,11 +11,11 @@ import 'package:grocery_app/features/home/model/product_model.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({super.key});
+  final ProductModel product;
+  const ProductDetailScreen({required this.product, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final product = GoRouterState.of(context).extra as ProductModel;
     final size = MediaQuery.of(context).size;
     final imageHeight = size.height * 0.4;
 

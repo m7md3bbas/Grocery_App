@@ -4,6 +4,8 @@ import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
+import 'package:grocery_app/features/payment/model/payment_model.dart';
+import 'package:grocery_app/features/payment/viewmodel/payment_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:grocery_app/features/cart/viewmodel/cart_view_model.dart';
 import 'package:grocery_app/features/cart/model/cart_model.dart';
@@ -32,7 +34,19 @@ class CartView extends StatelessWidget {
               );
             },
             child: cartVM.cartItems.isEmpty
-                ? const Center(child: Text("Your cart is empty"))
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset("assets/images/home/emptyCart.png"),
+                        Text("Your cart is empty", style: AppStyles.textBold20),
+                        Text(
+                          "Add some items to your cart",
+                          style: AppStyles.textMedium12,
+                        ),
+                      ],
+                    ),
+                  )
                 : Column(
                     children: [
                       Expanded(
@@ -51,7 +65,7 @@ class CartView extends StatelessWidget {
                           },
                         ),
                       ),
-                      _buildSummary(cartVM),
+                      _buildSummary(cartVM, context),
                     ],
                   ),
           ),
@@ -147,7 +161,7 @@ class CartView extends StatelessWidget {
     );
   }
 
-  Widget _buildSummary(CartViewModel cartVM) {
+  Widget _buildSummary(CartViewModel cartVM, BuildContext context) {
     final subtotal = cartVM.cartItems.fold(
       0.0,
       (sum, item) => sum + (item.price * item.quantity),

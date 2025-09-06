@@ -1,51 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/service/payment/payment_service.dart';
-import 'package:grocery_app/core/utils/error/failure.dart';
+import 'package:grocery_app/core/utils/payment/payment_manager.dart';
+import 'package:grocery_app/features/payment/model/payment_model.dart';
 
 class PaymentViewModel extends ChangeNotifier {
   final PaymentService paymentService;
-
-  PaymentViewModel({required this.paymentService});
+  final PaymentManager paymentManager;
+  PaymentViewModel({
+    required this.paymentService,
+    required this.paymentManager,
+  });
 
   bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  String _error = '';
 
-  Map<String, dynamic>? _payment;
-  Map<String, dynamic>? get payment => _payment;
-
-  Future<void> createPayment({
-    required String orderId,
-    required String userId,
-    required double amount,
-    String method = "cash_on_delivery",
-  }) async {
-    _isLoading = true;
+  void setError(String message) {
+    _isLoading = false;
+    _error = message;
     notifyListeners();
-    try {
-      _payment = await paymentService.createPayment(
-        orderId: orderId,
-        userId: userId,
-        amount: amount,
-        method: method,
-      );
-    } catch (e) {
-      throw Failure("Payment failed: $e");
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
   }
 
-  Future<void> getPaymentByOrder(String orderId) async {
-    _isLoading = true;
+  void setLoading(bool value) {
+    _isLoading = value;
     notifyListeners();
+  }
+
+  void setSuccess() {
+    _isLoading = false;
+    _error = '';
+    notifyListeners();
+  }
+
+  bool get isLoading => _isLoading;
+
+  String get error => _error;
+
+  Future<void> newPayment({required PaymentModel payment}) async {
     try {
-      _payment = await paymentService.getPaymentByOrder(orderId);
+      setLoading(true);
+      final amount = int.parse(
+        payment.amount.toStringAsFixed(0).replaceAll(',', ''),
+      );
+      paymentManager.makePayment(amount, "USD").then((value) {
+        if (value == PaymentStatus.success) {
+          paymentService.newPayment(payment: payment);
+        } else if (value == PaymentStatus.canceled) {
+          setError("Canceled");
+        } else {
+          setError("Failed");
+        }
+      });
+
+      setSuccess();
     } catch (e) {
-      throw Failure("Failed to fetch payment: $e");
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      setError(e.toString());
     }
   }
 }

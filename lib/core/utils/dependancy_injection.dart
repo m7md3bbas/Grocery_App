@@ -11,6 +11,7 @@ import 'package:grocery_app/core/service/cart/cart_service.dart';
 import 'package:grocery_app/core/service/category/category_service.dart';
 import 'package:grocery_app/core/service/dio/base_class.dart';
 import 'package:grocery_app/core/service/favorite/favorite_service.dart';
+import 'package:grocery_app/core/service/order/order_service.dart';
 import 'package:grocery_app/core/service/product/product_service.dart';
 import 'package:grocery_app/core/service/profile/profile_service.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
@@ -18,6 +19,7 @@ import 'package:grocery_app/features/cart/viewmodel/cart_view_model.dart';
 import 'package:grocery_app/features/favorite/viewmodel/favorite_view_model.dart';
 import 'package:grocery_app/features/home/viewmodel/home_view_model.dart';
 import 'package:grocery_app/features/onboarding/viewModel/onboarding_view_model_model.dart';
+import 'package:grocery_app/features/order/viewModel/order_viem_model.dart';
 import 'package:grocery_app/features/profile/viewmodel/profile_view_model.dart';
 import 'package:grocery_app/features/search/viewmodel/search_viewmodel.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -50,6 +52,9 @@ void setupLocator() {
   );
   locator.registerFactory<FavoriteService>(
     () => FavoriteService(dioBaseClient: locator<DioBaseClient>()),
+  );
+  locator.registerFactory<OrderService>(
+    () => OrderService(dioClient: locator<DioBaseClient>()),
   );
 
   // ============ Repos ============ //
@@ -94,6 +99,9 @@ void setupLocator() {
       productRepos: locator<ProductRepos>(),
       categoryRepos: locator<CategoryRepo>(),
     ),
+  );
+  locator.registerFactory(
+    () => OrderViemModel(orderService: locator<OrderService>()),
   );
   locator.registerFactory<SearchViewModel>(
     () => SearchViewModel(productRepos: locator<ProductRepos>()),

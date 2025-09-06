@@ -2,8 +2,9 @@ class OrderModel {
   final String id;
   final String userId;
   final double totalPrice;
-  final String status; // pending / confirmed / shipped / delivered / cancelled
-  final String paymentStatus; // unpaid / paid / failed / refunded
+  final String? status; // pending / confirmed / shipped / delivered / cancelled
+  final String? paymentStatus; // unpaid / paid / failed / refunded
+  final num orderNumber;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -12,7 +13,8 @@ class OrderModel {
     required this.userId,
     required this.totalPrice,
     required this.status,
-    required this.paymentStatus,
+    required this.orderNumber,
+    this.paymentStatus,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -23,9 +25,17 @@ class OrderModel {
       userId: json['user_id'],
       totalPrice: (json['total_price'] as num).toDouble(),
       status: json['status'],
+      orderNumber: json['order_number'] as num,
       paymentStatus: json['payment_status'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'user_id': userId,
+    'total_price': totalPrice,
+    'status': status,
+    'payment_status': paymentStatus,
+  };
 }
