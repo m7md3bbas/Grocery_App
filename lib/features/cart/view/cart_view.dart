@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
+import 'package:grocery_app/core/utils/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class CartView extends StatelessWidget {
             color: Colors.green,
             onRefresh: () async {
               await cartVM.fetchCartItems(
-                context.read<AuthViewModel>().getCurrentUser()!.id,
+                locator<AuthViewModel>().getCurrentUser()!.id,
               );
             },
             child: cartVM.cartItems.isEmpty

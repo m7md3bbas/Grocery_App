@@ -2,7 +2,9 @@ import 'package:grocery_app/features/auth/view/auth_login.dart';
 import 'package:grocery_app/features/auth/view/auth_register.dart';
 import 'package:grocery_app/features/auth/view/auth_welcome.dart';
 import 'package:grocery_app/features/auth/view/wrapper_auth.dart';
+import 'package:grocery_app/features/cart/view/cart_view.dart';
 import 'package:grocery_app/features/favorite/view/favorite_view.dart';
+import 'package:grocery_app/features/home/model/category_model.dart';
 import 'package:grocery_app/features/home/view/category_details_screen.dart';
 import 'package:grocery_app/features/home/view/home_view.dart';
 import 'package:grocery_app/features/home/view/product_details.dart';
@@ -38,7 +40,10 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRouteName.categoryDetails,
-        builder: (context, state) => CategoryDetailsScreen(),
+        builder: (context, state) {
+          final category = state.extra as CategoryModel;
+          return CategoryDetailsScreen(category: category);
+        },
       ),
       GoRoute(
         path: AppRouteName.productDetails,
@@ -74,6 +79,7 @@ class AppRouter {
         path: AppRouteName.favorite,
         builder: (context, state) => FavoriteView(),
       ),
+      GoRoute(path: AppRouteName.cart, builder: (context, state) => CartView()),
 
       GoRoute(
         path: AppRouteName.auth,

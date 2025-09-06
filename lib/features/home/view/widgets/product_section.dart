@@ -99,7 +99,7 @@ class CategoryProductSection extends StatelessWidget {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              itemCount: products.length + (isLoading ? 1 : 0),
+              itemCount: products.length + (isLoading ? 3 : 0),
               itemBuilder: (context, index) {
                 if (index < products.length) {
                   final product = products[index];

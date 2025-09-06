@@ -29,7 +29,6 @@ class WelcomeSection extends StatelessWidget {
             style: AppStyles.textMedium12,
           ),
           const SizedBox(height: 20),
-
           CustomCardAuth(
             onTap: () async {
               final result = await context
@@ -37,10 +36,7 @@ class WelcomeSection extends StatelessWidget {
                   .loginWithGoogle();
               if (result) {
                 GoRouter.of(context).push(AppRouteName.home);
-              } else {
-                print(context.read<AuthViewModel>().error);
-                ShowToast.showError(context.read<AuthViewModel>().error);
-              }
+              } else {}
             },
             iconColor: AppColors.primary,
             title: "Continue with Google",

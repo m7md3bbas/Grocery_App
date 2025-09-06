@@ -38,6 +38,7 @@ class _HomeViewState extends State<HomeView> {
               const ProfileView(),
             ],
           ),
+
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: viewModel.currentPage,
             onTap: (index) {
@@ -49,6 +50,7 @@ class _HomeViewState extends State<HomeView> {
             showSelectedLabels: false,
             showUnselectedLabels: false,
             type: BottomNavigationBarType.fixed,
+
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.house),
