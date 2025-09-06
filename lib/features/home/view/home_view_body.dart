@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
 import 'package:grocery_app/core/widgets/dismisskeyboard.dart';
 import 'package:grocery_app/core/widgets/textformfield/custom_textformfield.dart';
+import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/cart/viewmodel/cart_view_model.dart';
 import 'package:grocery_app/features/home/view/widgets/caregory_section.dart';
 import 'package:grocery_app/features/home/view/widgets/carousel_section.dart';
 import 'package:grocery_app/features/home/view/widgets/product_section.dart';
+import 'package:grocery_app/features/home/viewmodel/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 class HomeViewBody extends StatelessWidget {
@@ -39,7 +42,6 @@ class HomeViewBody extends StatelessWidget {
                         prefixIcon: Icon(Icons.search),
                       ),
                     ),
-
                     pinned: true,
                     floating: true,
                     backgroundColor: Colors.white,
@@ -60,14 +62,15 @@ class HomeViewBody extends StatelessWidget {
                       ),
                     ),
                     SliverToBoxAdapter(child: CaregorySection()),
-
                     CategoryProductSection(),
                   ],
                 ),
               ),
             ),
           ),
-          bottomNavigationBar: viewModel.cartItems.isNotEmpty
+          bottomNavigationBar:
+              context.watch<HomeViewModel>().isShowCart &&
+                  viewModel.cartItems.isNotEmpty
               ? AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.fastOutSlowIn,
@@ -76,6 +79,7 @@ class HomeViewBody extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
                     color: AppColors.background,
                     boxShadow: [
                       BoxShadow(
@@ -85,7 +89,7 @@ class HomeViewBody extends StatelessWidget {
                       ),
                     ],
                   ),
-                  height: 80,
+                  height: 100,
                   child: Row(
                     children: [
                       Expanded(
@@ -100,12 +104,16 @@ class HomeViewBody extends StatelessWidget {
                               children: [
                                 CircleAvatar(
                                   radius: 30,
-                                  child: Expanded(
+                                  backgroundColor: Colors.grey[200],
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(30),
                                     child: Image.asset(
                                       "assets/images/home/aocado-2 1.png",
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
+
                                 Positioned(
                                   top: 6,
                                   right: -3,
@@ -130,36 +138,52 @@ class HomeViewBody extends StatelessWidget {
                           },
                         ),
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.background,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () => context.push(AppRouteName.cart),
+                        child: Icon(
+                          FontAwesomeIcons.bagShopping,
+                          size: 35,
+                          color: AppColors.primary,
                         ),
-                        onPressed: () {
-                          GoRouter.of(context).push(AppRouteName.cart);
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.shopping_bag_rounded,
-                              color: AppColors.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "View your bag",
-                              style: AppStyles.textBold15.copyWith(
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ],
+                      ),
+                      const SizedBox(width: 10),
+
+                      GestureDetector(
+                        onTap: () =>
+                            context.read<HomeViewModel>().toggleShowCart(),
+                        child: Icon(
+                          FontAwesomeIcons.xmark,
+                          color: AppColors.primary,
+                          size: 35,
                         ),
                       ),
                     ],
                   ),
                 )
               : null,
+
+          floatingActionButton:
+              context.watch<HomeViewModel>().isShowCart &&
+                  viewModel.cartItems.isNotEmpty
+              ? null
+              : FloatingActionButton(
+                  backgroundColor: AppColors.primary,
+                  onPressed: () {
+                    if (viewModel.cartItems.isNotEmpty) {
+                      context.read<HomeViewModel>().toggleShowCart();
+                    } else {
+                      ShowToast.showInfo(
+                        "Cart is empty, please add some items",
+                      );
+                    }
+                  },
+                  child: Icon(
+                    FontAwesomeIcons.bagShopping,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
         ),
       ),
     );

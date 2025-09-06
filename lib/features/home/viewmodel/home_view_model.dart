@@ -22,8 +22,8 @@ class HomeViewModel extends ChangeNotifier {
   List<ProductModel> _products = [];
   final List<CategoryModel> _categories = [];
   int _currentIndex = 0;
-
-  bool _disposed = false; // ✅ flag
+  bool _isShowCart = false;
+  bool _disposed = false;
 
   @override
   void dispose() {
@@ -46,6 +46,12 @@ class HomeViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   List<ProductModel> get products => _products;
   int get currentIndex => _currentIndex;
+  bool get isShowCart => _isShowCart;
+
+  void toggleShowCart() async {
+    _isShowCart = !_isShowCart;
+    notifyListeners();
+  }
 
   void setCurrentIndex({required int index}) {
     _currentIndex = index;
