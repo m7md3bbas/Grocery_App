@@ -12,52 +12,55 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<OrderViemModel>(
-      builder: (context, viewModel, child) => Scaffold(
-        appBar: AppBar(title: const Text("Orders"), centerTitle: true),
-        body: viewModel.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(12),
-                itemCount: viewModel.orders.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () => GoRouter.of(context).push(
-                      AppRouteName.orderDetails,
-                      extra: viewModel.orders[index].id,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: AppColors.primaryLight,
+    return Consumer<OrderViewModel>(
+      builder: (context, viewModel, child) => RefreshIndicator(
+        onRefresh: () async => viewModel.getOrders(),
+        child: Scaffold(
+          appBar: AppBar(title: const Text("Orders"), centerTitle: true),
+          body: viewModel.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(12),
+                  itemCount: viewModel.orders.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => GoRouter.of(context).push(
+                        AppRouteName.orderDetails,
+                        extra: viewModel.orders[index],
                       ),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: AppColors.primaryLight,
-                          radius: 45,
-                          child: Icon(
-                            FontAwesomeIcons.bagShopping,
-                            color: AppColors.primary,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.primaryLight,
+                        ),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: AppColors.primaryLight,
+                            radius: 45,
+                            child: Icon(
+                              FontAwesomeIcons.bagShopping,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          title: Text(
+                            "Order ID: ${viewModel.orders[index].orderNumber}",
+                            style: AppStyles.textBold15,
+                          ),
+                          subtitle: Text(
+                            "Date: ${viewModel.orders[index].createdAt.toString().substring(0, 10)}",
+                            style: AppStyles.textMedium12,
+                          ),
+                          trailing: Text(
+                            viewModel.orders[index].status,
+                            style: AppStyles.textBold15,
                           ),
                         ),
-                        title: Text(
-                          "Order ID: ${viewModel.orders[index].orderNumber}",
-                          style: AppStyles.textBold15,
-                        ),
-                        subtitle: Text(
-                          "Date: ${viewModel.orders[index].createdAt.toString().substring(0, 10)}",
-                          style: AppStyles.textMedium12,
-                        ),
-                        trailing: Text(
-                          viewModel.orders[index].status!,
-                          style: AppStyles.textBold15,
-                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
+        ),
       ),
     );
   }

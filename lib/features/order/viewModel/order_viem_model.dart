@@ -2,49 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:grocery_app/core/service/order/order_service.dart';
 import 'package:grocery_app/core/utils/dependancy_injection.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
-import 'package:grocery_app/features/order/model/order_items_model.dart';
 import 'package:grocery_app/features/order/model/order_model.dart';
 
-class OrderViemModel extends ChangeNotifier {
+class OrderViewModel extends ChangeNotifier {
   final OrderService orderService;
 
-  OrderViemModel({required this.orderService}) {
+  OrderViewModel({required this.orderService}) {
     getOrders();
   }
 
   bool isLoading = false;
   String error = '';
   bool isDispose = false;
+
+  List<OrderModel> orders = [];
+  List<OrderModel> get getOrdersList => orders;
+
   @override
   void dispose() {
     if (!isDispose) {
       isDispose = true;
       notifyListeners();
     }
-
     super.dispose();
   }
 
-  setLoading(bool value) {
+  void setLoading(bool value) {
     isLoading = value;
     notifyListeners();
   }
 
-  setError(String message) {
+  void setError(String message) {
     isLoading = false;
     error = message;
     notifyListeners();
   }
 
-  setSuccess() {
+  void setSuccess() {
     isLoading = false;
     error = '';
     notifyListeners();
   }
 
-  List<OrderModel> orders = [];
-  List<OrderModel> get getOrdersList => orders;
-
+  // Fetch all orders for current user
   Future<void> getOrders() async {
     setLoading(true);
     try {
@@ -57,25 +57,46 @@ class OrderViemModel extends ChangeNotifier {
     }
   }
 
-  OrderItemModel? orderItem;
-  OrderModel? currentOrder;
-
-  Future<void> getOrderItems({required String orderId}) async {
+  Future<String?> createOrder({
+    required String userId,
+    required double totalPrice,
+  }) async {
     setLoading(true);
     try {
-      orderItem = await orderService.getOrderItems(orderId);
-      currentOrder = orders.firstWhere(
-        (o) => o.id == orderId,
-        orElse: () => OrderModel(
-          id: orderId,
-          userId: '',
-          totalPrice: 0,
-          status: 'Unknown',
-          orderNumber: 0,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        ),
+      final orderId = await orderService.createOrder(
+        userId: userId,
+        totalPrice: totalPrice,
       );
+      setLoading(false);
+      return orderId;
+    } catch (e) {
+      setError(e.toString());
+      return null;
+    }
+  }
+
+  Future<void> addOrderItems({
+    required String orderId,
+    required List<Map<String, dynamic>> items,
+  }) async {
+    setLoading(true);
+    try {
+      await orderService.addOrderItems(orderId: orderId, items: items);
+      setSuccess();
+    } catch (e) {
+      setError(e.toString());
+    }
+  }
+
+  // Cancel order
+  Future<void> cancelOrder(String orderId) async {
+    setLoading(true);
+    try {
+      await orderService.cancelOrder(orderId);
+      final index = orders.indexWhere((o) => o.id == orderId);
+      if (index != -1) {
+        orders[index] = orders[index].copyWith(status: 'canceled');
+      }
       setSuccess();
     } catch (e) {
       setError(e.toString());

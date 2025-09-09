@@ -5,7 +5,7 @@ class PaymentModel {
   final double amount;
   final String method; // cash_on_delivery / credit_card / wallet
   final String status; // pending / success / failed
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   PaymentModel({
     this.id,
@@ -14,7 +14,7 @@ class PaymentModel {
     required this.amount,
     required this.method,
     required this.status,
-    required this.createdAt,
+    this.createdAt,
   });
 
   factory PaymentModel.fromJson(Map<String, dynamic> json) {

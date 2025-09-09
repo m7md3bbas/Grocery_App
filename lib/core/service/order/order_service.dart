@@ -1,63 +1,69 @@
+import 'package:dio/dio.dart';
 import 'package:grocery_app/core/service/dio/base_class.dart';
-import 'package:grocery_app/core/utils/error/failure.dart';
-import 'package:grocery_app/features/order/model/order_items_model.dart';
 import 'package:grocery_app/features/order/model/order_model.dart';
 
 class OrderService {
   final DioBaseClient dioClient;
-  String orderTable = 'orders';
-  String orderItemTable = 'order_items';
+
   OrderService({required this.dioClient});
 
-  Future<void> newOrder({required OrderModel order}) async {
-    try {
-      await dioClient.post(url: orderTable, body: order.toJson());
-    } catch (e) {
-      throw Failure("Failed to add order: $e");
-    }
-  }
-
-  Future<void> newOrderItem({required OrderItemModel orderItem}) async {
-    try {
-      await dioClient.post(url: orderItemTable, body: orderItem.toJson());
-    } catch (e) {
-      throw Failure("Failed to add order item: $e");
-    }
-  }
-
   Future<List<OrderModel>> getUserOrders(String userId) async {
-    try {
-      final response = await dioClient.get(
-        url: orderTable,
-        queryParameters: {'user_id': 'eq.$userId'},
-      );
+    final response = await dioClient.get(
+      url: 'orders',
+      queryParameters: {
+        'user_id': 'eq.$userId',
+        'select': '*, order_items(*, product:product_id(*))',
+        'order': 'created_at.desc',
+      },
+    );
 
-      final data = response.data as List<dynamic>;
-      final orders = data.map((json) => OrderModel.fromJson(json)).toList();
-      return orders;
-    } catch (e) {
-      throw Failure("Failed to get user orders: $e");
-    }
+    final data = response.data as List<dynamic>;
+    return data.map((json) => OrderModel.fromJson(json)).toList();
   }
 
-  Future<OrderItemModel?> getOrderItems(String orderId) async {
-    try {
-      final response = await dioClient.get(
-        url: orderItemTable,
-        queryParameters: {
-          'order_id': 'eq.$orderId',
-          'select': '*, product:product_id(*)',
+  Future<String?> createOrder({
+    required String userId,
+    required double totalPrice,
+  }) async {
+    final response = await dioClient.post(
+      url: 'orders?select=id',
+      options: Options(headers: {'Prefer': 'return=representation'}),
+      body: {
+        'user_id': userId,
+        'total_price': totalPrice,
+        'status': 'pending',
+        'payment_status': 'unpaid',
+      },
+    );
+
+    final orderData = response.data[0];
+    final orderId = orderData['id'];
+
+    return orderId;
+  }
+
+  Future<void> addOrderItems({
+    required String orderId,
+    required List<Map<String, dynamic>> items,
+  }) async {
+    for (var item in items) {
+      await dioClient.post(
+        url: 'order_items',
+        body: {
+          'order_id': orderId,
+          'product_id': item['product_id'],
+          'quantity': item['quantity'],
+          'price': item['price'],
         },
       );
-
-      final data = response.data as List<dynamic>;
-
-      if (data.isNotEmpty) {
-        return OrderItemModel.fromJson(data.first);
-      }
-      return null;
-    } catch (e) {
-      throw Failure("Failed to get order items: $e");
     }
+  }
+
+  Future<void> cancelOrder(String orderId) async {
+    await dioClient.patch(
+      url: 'orders',
+      queryParameters: {'id': 'eq.$orderId'},
+      data: {'status': 'canceled'},
+    );
   }
 }

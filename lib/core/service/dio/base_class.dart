@@ -30,9 +30,10 @@ class DioBaseClient {
     required String url,
     required Map<String, dynamic> queryParameters,
     Options? options,
-  }) async => await dio.get(url, queryParameters: queryParameters);
-  Future<Response> post({required String url, body}) async =>
-      await dio.post(url, data: body);
+  }) async =>
+      await dio.get(url, queryParameters: queryParameters, options: options);
+  Future<Response> post({required String url, body, Options? options}) async =>
+      await dio.post(url, data: body, options: options);
   Future<Response> put({required String url, data}) async =>
       await dio.put(url, data: data);
   Future<Response> delete({

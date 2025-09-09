@@ -6,6 +6,7 @@ import 'package:grocery_app/features/cart/viewmodel/cart_view_model.dart';
 import 'package:grocery_app/features/favorite/viewmodel/favorite_view_model.dart';
 import 'package:grocery_app/features/home/viewmodel/home_view_model.dart';
 import 'package:grocery_app/features/order/viewModel/order_viem_model.dart';
+import 'package:grocery_app/features/payment/viewmodel/payment_view_model.dart';
 import 'package:grocery_app/features/profile/viewmodel/profile_view_model.dart';
 import 'package:grocery_app/features/search/viewmodel/search_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,10 @@ class GroceryApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => locator<FavoriteViewModel>(),
         ),
-        ChangeNotifierProvider(create: (context) => locator<OrderViemModel>()),
+        ChangeNotifierProvider(create: (context) => locator<OrderViewModel>()),
+        ChangeNotifierProvider(
+          create: (context) => locator<PaymentViewModel>(),
+        ),
       ],
       child: MaterialApp.router(
         routerConfig: AppRouter.router,

@@ -41,8 +41,9 @@ class PaymentViewModel extends ChangeNotifier {
       final amount = int.parse(
         payment.amount.toStringAsFixed(0).replaceAll(',', ''),
       );
-      paymentManager.makePayment(amount, "USD").then((value) {
+      await paymentManager.makePayment(amount, "USD").then((value) {
         if (value == PaymentStatus.success) {
+          setSuccess();
           paymentService.newPayment(payment: payment);
         } else if (value == PaymentStatus.canceled) {
           setError("Canceled");
@@ -50,8 +51,6 @@ class PaymentViewModel extends ChangeNotifier {
           setError("Failed");
         }
       });
-
-      setSuccess();
     } catch (e) {
       setError(e.toString());
     }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -107,8 +108,8 @@ class HomeViewBody extends StatelessWidget {
                                   backgroundColor: Colors.grey[200],
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(30),
-                                    child: Image.asset(
-                                      "assets/images/home/aocado-2 1.png",
+                                    child: CachedNetworkImage(
+                                      imageUrl: item.product!.image!,
                                       fit: BoxFit.cover,
                                     ),
                                   ),

@@ -3,8 +3,9 @@ import 'package:grocery_app/features/home/model/product_model.dart';
 class OrderItemModel {
   final String id;
   final String orderId;
-  final String productId;
-  final ProductModel product;
+  final String? productId;
+  final ProductModel?
+  product; // nullable since product may be deleted (set null)
   final int quantity;
   final double price;
   final DateTime createdAt;
@@ -12,8 +13,8 @@ class OrderItemModel {
   OrderItemModel({
     required this.id,
     required this.orderId,
-    required this.productId,
-    required this.product,
+    this.productId,
+    this.product,
     required this.quantity,
     required this.price,
     required this.createdAt,
@@ -24,7 +25,9 @@ class OrderItemModel {
       id: json['id'],
       orderId: json['order_id'],
       productId: json['product_id'],
-      product: ProductModel.fromJson(json['product']),
+      product: json['product'] != null
+          ? ProductModel.fromJson(json['product'])
+          : null,
       quantity: json['quantity'],
       price: (json['price'] as num).toDouble(),
       createdAt: DateTime.parse(json['created_at']),

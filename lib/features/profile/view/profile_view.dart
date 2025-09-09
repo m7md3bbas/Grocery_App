@@ -10,21 +10,8 @@ import 'package:grocery_app/features/profile/viewmodel/profile_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:photo_view/photo_view.dart';
 
-class ProfileView extends StatefulWidget {
+class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
-
-  @override
-  State<ProfileView> createState() => _ProfileViewState();
-}
-
-class _ProfileViewState extends State<ProfileView> {
-  @override
-  void initState() {
-    context.read<ProfileViewModel>().getProfile(
-      userId: context.read<AuthViewModel>().getCurrentUser()!.id,
-    );
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,33 +80,26 @@ class _ProfileViewState extends State<ProfileView> {
                                       }
                                     }
                                   },
-                                  child: viewModel.isProfileLoading
-                                      ? CircularProgressIndicator(
-                                          color: AppColors.primaryDark,
-                                        )
-                                      : CircleAvatar(
-                                          radius: 50,
-                                          backgroundColor: Colors.grey.shade300,
-                                          backgroundImage:
-                                              viewModel.user?.image != null &&
-                                                  viewModel
-                                                      .user!
-                                                      .image
-                                                      .isNotEmpty
-                                              ? CachedNetworkImageProvider(
-                                                  viewModel.user!.image,
-                                                )
-                                              : null,
-                                          child:
-                                              (viewModel.user?.image == null ||
-                                                  viewModel.user!.image.isEmpty)
-                                              ? const Icon(
-                                                  Icons.person,
-                                                  color: Colors.white,
-                                                  size: 40,
-                                                )
-                                              : null,
-                                        ),
+                                  child: CircleAvatar(
+                                    radius: 50,
+                                    backgroundColor: Colors.grey.shade300,
+                                    backgroundImage:
+                                        viewModel.user?.image != null &&
+                                            viewModel.user!.image.isNotEmpty
+                                        ? CachedNetworkImageProvider(
+                                            viewModel.user!.image,
+                                          )
+                                        : null,
+                                    child:
+                                        (viewModel.user?.image == null ||
+                                            viewModel.user!.image.isEmpty)
+                                        ? const Icon(
+                                            Icons.person,
+                                            color: Colors.white,
+                                            size: 40,
+                                          )
+                                        : null,
+                                  ),
                                 ),
 
                                 GestureDetector(

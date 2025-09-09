@@ -4,6 +4,7 @@ import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
+import 'package:grocery_app/features/order/viewModel/order_viem_model.dart';
 import 'package:grocery_app/features/payment/model/payment_model.dart';
 import 'package:grocery_app/features/payment/viewmodel/payment_view_model.dart';
 import 'package:provider/provider.dart';
@@ -95,8 +96,7 @@ class CartView extends StatelessWidget {
       direction: DismissDirection.endToStart,
       child: ListTile(
         leading: CachedNetworkImage(
-          imageUrl:
-              "https://scontent.fcai21-3.fna.fbcdn.net/v/t39.30808-1/500090141_728094803078377_7177707023235177986_n.jpg?stp=dst-jpg_s160x160_tt6&_nc_cat=100&ccb=1-7&_nc_sid=e99d92&_nc_ohc=UrvCOgLKUdMQ7kNvwEQLA3z&_nc_oc=AdmEv_DsHNC3fQwaQeqSNZ-qcv1G05JdXVAYHRei9vHVy6EoMUhUW_Aybigjl1e5n0E&_nc_zt=24&_nc_ht=scontent.fcai21-3.fna&_nc_gid=6VSIw_HmyFE-VuYj3rlAEg&oh=00_AfarYlVdxveVkcOjPruE8n5odLvyHBBDqLbgeTs7Zlievg&oe=68BF8676",
+          imageUrl: item.product!.image!,
           width: 50,
           height: 50,
         ),
@@ -193,7 +193,44 @@ class CartView extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              final orderId = await context.read<OrderViewModel>().createOrder(
+                userId: context.read<AuthViewModel>().getCurrentUser()!.id,
+                totalPrice: total,
+              );
+
+              if (orderId != null) {
+                await context.read<OrderViewModel>().addOrderItems(
+                  orderId: orderId,
+                  items: cartVM.cartItems
+                      .map(
+                        (e) => {
+                          "product_id": e.productId,
+                          "quantity": e.quantity,
+                          "price": e.price,
+                        },
+                      )
+                      .toList(),
+                );
+              }
+
+              await context
+                  .read<PaymentViewModel>()
+                  .newPayment(
+                    payment: PaymentModel(
+                      orderId: orderId!,
+                      userId: locator<AuthViewModel>().getCurrentUser()!.id,
+                      amount: total,
+                      method: "cash",
+                      status: "Paid",
+                    ),
+                  )
+                  .then(
+                    (_) => context.read<CartViewModel>().clearCart(
+                      locator.get<AuthViewModel>().getCurrentUser()!.id,
+                    ),
+                  );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               minimumSize: const Size(double.infinity, 50),
@@ -201,10 +238,12 @@ class CartView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Text(
-              "Checkout",
-              style: AppStyles.textBold15.copyWith(color: Colors.white),
-            ),
+            child: cartVM.isLoading
+                ? const CircularProgressIndicator(color: Colors.white)
+                : Text(
+                    "Checkout",
+                    style: AppStyles.textBold15.copyWith(color: Colors.white),
+                  ),
           ),
         ],
       ),

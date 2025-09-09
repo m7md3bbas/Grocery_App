@@ -138,7 +138,7 @@ class CartViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      await _cartRepo.clearCart(userId);
+      await _cartRepo.clearCart(userId).then((value) => _cartItems = []);
     } catch (e) {
       _error = e.toString();
     } finally {

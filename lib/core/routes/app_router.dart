@@ -6,10 +6,12 @@ import 'package:grocery_app/features/cart/view/cart_view.dart';
 import 'package:grocery_app/features/favorite/view/favorite_view.dart';
 import 'package:grocery_app/features/home/model/category_model.dart';
 import 'package:grocery_app/features/home/model/product_model.dart';
-import 'package:grocery_app/features/home/view/category_details_screen.dart';
+import 'package:grocery_app/features/profile/category_details_screen.dart';
 import 'package:grocery_app/features/home/view/home_view.dart';
 import 'package:grocery_app/features/home/view/product_details.dart';
 import 'package:grocery_app/features/onboarding/views/onboarding_view.dart';
+import 'package:grocery_app/features/order/model/order_items_model.dart';
+import 'package:grocery_app/features/order/model/order_model.dart';
 import 'package:grocery_app/features/order/view/order_details_screen.dart';
 import 'package:grocery_app/features/order/view/order_screen.dart';
 import 'package:grocery_app/features/profile/view/profile_view.dart';
@@ -102,8 +104,8 @@ class AppRouter {
       GoRoute(
         path: AppRouteName.orderDetails,
         builder: (context, state) {
-          final orderId = state.extra as String;
-          return OrderDetailsScreen(orderId: orderId);
+          final orderModel = state.extra as OrderModel;
+          return OrderDetailsScreen(order: orderModel);
         },
       ),
     ],
