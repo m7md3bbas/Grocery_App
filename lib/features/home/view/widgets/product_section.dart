@@ -76,7 +76,7 @@ class CategoryProductSection extends StatelessWidget {
               TextButton(
                 onPressed: () => context.goNamed(
                   AppRouteName.categoryDetails,
-                  extra: category,
+                  extra: category.id,
                 ),
                 child: Text(
                   "See All",

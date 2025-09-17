@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:grocery_app/core/routes/route_dir_name.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
+import 'package:grocery_app/core/utils/di/dependancy_injection.dart';
+import 'package:grocery_app/core/utils/sharedpref/shared_pref.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/view/auth_login.dart';
 import 'package:grocery_app/features/auth/view/auth_register.dart';
@@ -31,8 +33,7 @@ part 'redirect.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: RouteDirName.authWelcome,
-
+    initialLocation: RouteDirName.onBoarding,
     redirect: (context, state) => getRedirect(context, state),
     routes: [
       GoRoute(
@@ -86,8 +87,8 @@ class AppRouter {
         name: AppRouteName.orderDetails,
         path: RouteDirName.orderDetails,
         builder: (context, state) {
-          final orderModel = state.extra as OrderModel;
-          return OrderDetailsScreen(order: orderModel);
+          final order = state.extra as OrderModel;
+          return OrderDetailsScreen(order: order);
         },
       ),
 

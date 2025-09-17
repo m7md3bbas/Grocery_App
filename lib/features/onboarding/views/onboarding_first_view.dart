@@ -15,7 +15,7 @@ class OnboardingViewBody extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 10,
           children: [
-            SvgPicture.asset(onboardingModel.image, height: 384, width: 384),
+            SvgPicture.network(onboardingModel.image, height: 384, width: 384),
             Text(onboardingModel.title, style: AppStyles.textBold25),
             Text(onboardingModel.description, style: AppStyles.textMedium12),
           ],

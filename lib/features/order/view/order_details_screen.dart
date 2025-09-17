@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
+import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/order/model/order_model.dart';
 import 'package:grocery_app/features/order/viewModel/order_viem_model.dart';
@@ -55,19 +57,36 @@ class OrderDetailsScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     if (index < order.orderItems.length) {
                       final item = order.orderItems[index];
-                      return ListTile(
-                        leading: CachedNetworkImage(
-                          imageUrl: item.product?.image ?? '',
-                          width: 50,
-                          height: 50,
-                          errorWidget: (_, __, ___) =>
-                              const Icon(Icons.image_not_supported),
+                      return GestureDetector(
+                        onTap: () => context.pushNamed(
+                          AppRouteName.productDetails,
+                          extra: item.product,
                         ),
-                        title: Text(item.product?.title ?? "Deleted product"),
-                        subtitle: Text("Qty: ${item.quantity}"),
-                        trailing: Text(
-                          "\$${(item.price * item.quantity).toStringAsFixed(2)}",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryDark,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            leading: CachedNetworkImage(
+                              imageUrl: item.product?.image ?? '',
+                              width: 50,
+                              height: 50,
+                              errorWidget: (_, __, ___) =>
+                                  const Icon(Icons.image_not_supported),
+                            ),
+                            title: Text(
+                              item.product?.title ?? "Deleted product",
+                            ),
+                            subtitle: Text("Qty: ${item.quantity}"),
+                            trailing: Text(
+                              "\$${(item.price * item.quantity).toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
                       );
                     } else {
@@ -100,7 +119,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                               .then(
                                                 (value) =>
                                                     ShowToast.showSuccess(
-                                                      "Payment success",
+                                                      "successfully paid",
                                                     ),
                                               )
                                               .then((_) => context.pop());

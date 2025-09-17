@@ -191,23 +191,9 @@ class ProfileView extends StatelessWidget {
                                     Icons.logout,
                                     "Sign out",
                                     () async {
-                                      final currentUser = context
-                                          .read<AuthViewModel>()
-                                          .getCurrentUser();
-
-                                      if (currentUser
-                                              ?.appMetadata['provider'] ==
-                                          'google') {
-                                        await GoogleSignIn().signOut().then(
-                                          (_) => context.goNamed(
-                                            AppRouteName.signIn,
-                                          ),
-                                        );
-                                      }
-
                                       await viewModel.logout().then(
-                                        (_) => context.goNamed(
-                                          AppRouteName.signIn,
+                                        (value) => context.goNamed(
+                                          AppRouteName.authWelcome,
                                         ),
                                       );
                                     },

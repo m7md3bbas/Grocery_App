@@ -3,6 +3,7 @@ import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
+import 'package:grocery_app/core/utils/sharedpref/shared_pref.dart';
 import 'package:grocery_app/features/onboarding/viewModel/onboarding_view_model_model.dart';
 import 'package:grocery_app/features/onboarding/views/onboarding_first_view.dart';
 import 'package:go_router/go_router.dart';
@@ -69,8 +70,9 @@ class OnboardingView extends StatelessWidget {
                   ),
 
                   TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (ref.currentPage == ref.onboardingModel.length - 1) {
+                        await SharedPref.setSeenOnboarding();
                         context.goNamed(AppRouteName.authWelcome);
                       } else {
                         controller.nextPage(

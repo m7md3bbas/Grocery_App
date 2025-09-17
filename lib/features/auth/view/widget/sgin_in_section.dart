@@ -96,12 +96,12 @@ class _SginInSectionState extends State<SginInSection> {
                 ),
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    final result = await viewModel.login(
+                    final isSuccess = await viewModel.login(
                       email: email.text,
                       password: password.text,
                     );
-                    if (result) {
-                      context.goNamed(AppRouteName.home);
+                    if (isSuccess) {
+                      context.pushReplacementNamed(AppRouteName.home);
                     } else {
                       ShowToast.showError(viewModel.error);
                     }

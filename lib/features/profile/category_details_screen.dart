@@ -12,11 +12,7 @@ class CategoryDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
-        title: Text(category.title),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(category.title), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Consumer<HomeViewModel>(

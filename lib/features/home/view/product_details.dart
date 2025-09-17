@@ -2,12 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
+import 'package:grocery_app/core/utils/di/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/cart/viewmodel/cart_view_model.dart';
 import 'package:grocery_app/features/favorite/viewmodel/favorite_view_model.dart';
 import 'package:grocery_app/features/home/model/product_model.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -25,12 +26,10 @@ class ProductDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image + back + fav
             Container(
               height: imageHeight,
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color(0xFFE9FBE5),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(40),
                   bottomRight: Radius.circular(40),
@@ -100,17 +99,34 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                       child: Hero(
                         tag: 'product_${product.id}',
-                        child: CachedNetworkImage(
-                          imageUrl: product.image!,
-                          fit: BoxFit.contain,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(
-                                color: AppColors.primary,
+                        child: GestureDetector(
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => Scaffold(
+                                backgroundColor: Colors.black,
+                                body: PhotoView(
+                                  filterQuality: FilterQuality.high,
+                                  minScale: PhotoViewComputedScale.contained,
+                                  maxScale: PhotoViewComputedScale.contained,
+                                  imageProvider: CachedNetworkImageProvider(
+                                    product.image!,
+                                  ),
+                                ),
                               ),
-                          errorWidget: (context, url, error) => Icon(
-                            Icons.image_not_supported,
-                            color: Colors.grey[400],
-                            size: 40,
+                            ),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: product.image!,
+                            fit: BoxFit.contain,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(
+                                  color: AppColors.primary,
+                                ),
+                            errorWidget: (context, url, error) => Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey[400],
+                              size: 40,
+                            ),
                           ),
                         ),
                       ),
@@ -119,8 +135,6 @@ class ProductDetailScreen extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Info
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),

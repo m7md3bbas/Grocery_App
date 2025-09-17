@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
+import 'package:grocery_app/core/widgets/dismisskeyboard.dart';
 import 'package:grocery_app/features/cart/view/cart_view.dart';
 import 'package:grocery_app/features/favorite/view/favorite_view.dart';
 import 'package:grocery_app/features/home/view/home_view_body.dart';
@@ -26,59 +27,61 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HomeViewModel>(
-      builder: (context, viewModel, _) {
-        return Scaffold(
-          body: PageView(
-            controller: _pageController,
-            onPageChanged: (page) => viewModel.setCurrentPage(page: page),
-            children: [
-              const HomeViewBody(),
-              const FavoriteView(),
-              const CartView(),
-              const OrderScreen(),
-              const ProfileView(),
-            ],
-          ),
+    return KeyboardDismissOnTap(
+      child: Consumer<HomeViewModel>(
+        builder: (context, viewModel, _) {
+          return Scaffold(
+            body: PageView(
+              controller: _pageController,
+              onPageChanged: (page) => viewModel.setCurrentPage(page: page),
+              children: [
+                const HomeViewBody(),
+                const FavoriteView(),
+                const CartView(),
+                const OrderScreen(),
+                const ProfileView(),
+              ],
+            ),
 
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: viewModel.currentPage,
-            onTap: (index) {
-              _pageController.jumpToPage(index);
-              viewModel.setCurrentPage(page: index);
-            },
-            selectedItemColor: AppColors.primary,
-            unselectedItemColor: Colors.grey,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            type: BottomNavigationBarType.fixed,
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: viewModel.currentPage,
+              onTap: (index) {
+                _pageController.jumpToPage(index);
+                viewModel.setCurrentPage(page: index);
+              },
+              selectedItemColor: AppColors.primary,
+              unselectedItemColor: Colors.grey,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              type: BottomNavigationBarType.fixed,
 
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.house),
-                label: "Home",
-              ),
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.house),
+                  label: "Home",
+                ),
 
-              BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.heart),
-                label: "Favorite",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.bagShopping),
-                label: "Cart",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.clipboardCheck),
-                label: "Orders",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.user),
-                label: "Profile",
-              ),
-            ],
-          ),
-        );
-      },
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.heart),
+                  label: "Favorite",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.bagShopping),
+                  label: "Cart",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.clipboardCheck),
+                  label: "Orders",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.user),
+                  label: "Profile",
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -60,7 +60,6 @@ class AuthViewModel extends ChangeNotifier {
     } on Failure catch (f) {
       _setError(f.errorMessage);
     } catch (e) {
-      print(e);
       _setError("Unexpected error occurred.");
     }
     return false;

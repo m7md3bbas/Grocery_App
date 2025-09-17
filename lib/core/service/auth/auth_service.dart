@@ -65,6 +65,7 @@ class AuthServiceImp implements AuthService {
   @override
   Future<void> logout() async {
     try {
+      await GoogleSignIn().signOut();
       await supabaseClient.auth.signOut();
     } catch (_) {
       throw Failure("Failed to logout. Try again.");

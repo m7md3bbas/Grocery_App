@@ -25,15 +25,15 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SearchViewModel>(
-      builder: (context, value, child) => KeyboardDismissOnTap(
-        child: Scaffold(
+    return KeyboardDismissOnTap(
+      child: Consumer<SearchViewModel>(
+        builder: (context, value, child) => Scaffold(
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverAppBar(
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () => GoRouter.of(context).pop(),
+                  onPressed: () => context.pop(),
                 ),
                 title: CustomTextFormField(
                   onChanged: (query) {

@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:grocery_app/core/service/dio/base_class.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
+import 'package:grocery_app/core/utils/di/dependancy_injection.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
+import 'package:grocery_app/features/order/model/order_items_model.dart';
 import 'package:grocery_app/features/order/model/order_model.dart';
 
 class OrderService {
@@ -20,6 +21,7 @@ class OrderService {
     );
 
     final data = response.data as List<dynamic>;
+    print(data);
     return data.map((json) => OrderModel.fromJson(json)).toList();
   }
 
@@ -43,16 +45,16 @@ class OrderService {
 
   Future<void> addOrderItems({
     required String orderId,
-    required List<Map<String, dynamic>> items,
+    required List<OrderItemModel> items,
   }) async {
     for (var item in items) {
       await dioClient.post(
         url: 'order_items',
         body: {
           'order_id': orderId,
-          'product_id': item['product_id'],
-          'quantity': item['quantity'],
-          'price': item['price'],
+          'product_id': item.productId,
+          'quantity': item.quantity,
+          'price': item.price,
         },
       );
     }

@@ -48,17 +48,22 @@ class OrderModel {
   }
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
-    final itemsJson = json['order_items'] as List<dynamic>? ?? [];
     return OrderModel(
-      id: json['id'],
-      userId: json['user_id'],
-      totalPrice: (json['total_price'] as num).toDouble(),
-      status: json['status'],
-      paymentStatus: json['payment_status'],
-      orderNumber: json['order_number'],
-      orderItems: itemsJson.map((e) => OrderItemModel.fromJson(e)).toList(),
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      id: json['id']?.toString() ?? '',
+      userId: json['user_id']?.toString() ?? '',
+      totalPrice: (json['total_price'] ?? 0).toDouble(),
+      status: json['status']?.toString() ?? 'pending',
+      paymentStatus: json['payment_status']?.toString() ?? 'unpaid',
+      orderNumber: json['order_number'] ?? 0,
+      orderItems: (json['order_items'] as List<dynamic>? ?? [])
+          .map((e) => OrderItemModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : DateTime.now(),
     );
   }
 

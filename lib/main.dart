@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:grocery_app/app.dart';
 import 'package:grocery_app/core/service/supabase/supabase_sevice.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
+import 'package:grocery_app/core/utils/di/dependancy_injection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

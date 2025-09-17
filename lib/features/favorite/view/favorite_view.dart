@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
+import 'package:grocery_app/core/utils/di/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/favorite/viewmodel/favorite_view_model.dart';

@@ -1,23 +1,22 @@
 import 'package:grocery_app/features/home/model/product_model.dart';
 
 class OrderItemModel {
-  final String id;
+  final String? id;
   final String orderId;
   final String? productId;
-  final ProductModel?
-  product; // nullable since product may be deleted (set null)
+  final ProductModel? product;
   final int quantity;
   final double price;
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   OrderItemModel({
-    required this.id,
+    this.id,
     required this.orderId,
     this.productId,
     this.product,
     required this.quantity,
     required this.price,
-    required this.createdAt,
+    this.createdAt,
   });
 
   factory OrderItemModel.fromJson(Map<String, dynamic> json) {

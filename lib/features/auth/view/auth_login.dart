@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_app/core/utils/constants/images.dart';
@@ -23,10 +24,10 @@ class SignIn extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Image.asset(
+              CachedNetworkImage(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 2,
-                AppImages.auth,
+                imageUrl: AppImages.auth,
                 fit: BoxFit.cover,
               ),
               SginInSection(),

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
-import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/view/widget/custom_card_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
@@ -32,13 +30,12 @@ class WelcomeSection extends StatelessWidget {
           const SizedBox(height: 20),
           CustomCardAuth(
             onTap: () async {
-              final result = await context
+              final isSuccess = await context
                   .read<AuthViewModel>()
                   .loginWithGoogle();
-              if (result) {
-                context.goNamed(AppRouteName.home);
-              } else {
-                ShowToast.showError("Failed to login with google");
+
+              if (isSuccess) {
+                context.pushNamed(AppRouteName.home);
               }
             },
             iconColor: AppColors.primary,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/repos/favorite/favorite_repo.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
+import 'package:grocery_app/core/utils/di/dependancy_injection.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/favorite/model/favorite_model.dart';
 

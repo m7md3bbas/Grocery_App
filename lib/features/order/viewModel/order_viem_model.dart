@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/service/order/order_service.dart';
+import 'package:grocery_app/features/order/model/order_items_model.dart';
 import 'package:grocery_app/features/order/model/order_model.dart';
 
 class OrderViewModel extends ChangeNotifier {
@@ -75,6 +76,7 @@ class OrderViewModel extends ChangeNotifier {
     setLoading(true);
     try {
       final orderId = await orderService.createOrder(totalPrice: totalPrice);
+
       setLoading(false);
       return orderId;
     } catch (e) {
@@ -85,11 +87,12 @@ class OrderViewModel extends ChangeNotifier {
 
   Future<void> addOrderItems({
     required String orderId,
-    required List<Map<String, dynamic>> items,
+    required List<OrderItemModel> items,
   }) async {
     setLoading(true);
     try {
       await orderService.addOrderItems(orderId: orderId, items: items);
+      getOrders();
       setSuccess();
     } catch (e) {
       setError(e.toString());

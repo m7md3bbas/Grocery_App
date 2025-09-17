@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/utils/constants/images.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
@@ -13,10 +14,10 @@ class AuthWelcome extends StatelessWidget {
       backgroundColor: AppColors.backgroundLight,
       body: Column(
         children: [
-          Image.asset(
+          CachedNetworkImage(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height / 1.5,
-            AppImages.auth,
+            imageUrl: AppImages.auth,
             fit: BoxFit.cover,
           ),
           WelcomeSection(),

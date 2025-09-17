@@ -37,7 +37,7 @@ class HomeViewBody extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.all(8.0),
                       child: CustomTextFormField(
-                        ontap: () => context.goNamed(AppRouteName.search),
+                        ontap: () => context.pushNamed(AppRouteName.search),
                         readOnly: true,
                         hintText: "Search",
                         prefixIcon: Icon(Icons.search),
@@ -119,9 +119,9 @@ class HomeViewBody extends StatelessWidget {
                                   top: 6,
                                   right: -3,
                                   child: GestureDetector(
-                                    onTap: () {
+                                    onTap: () async {
                                       viewModel.removeLocal(item.id);
-                                      viewModel.removeFromCart(
+                                      await viewModel.removeFromCart(
                                         item.userId,
                                         item.id,
                                       );

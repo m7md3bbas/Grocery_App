@@ -90,20 +90,18 @@ class _SginUpSectionState extends State<SginUpSection> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    final result = viewModel.register(
+                    final isSuccess = await viewModel.register(
                       email: email.text,
                       phone: phone.text,
                       password: password.text,
                     );
-                    result.then((value) {
-                      if (value) {
-                        context.goNamed(AppRouteName.home);
-                      } else {
-                        ShowToast.showError(viewModel.error);
-                      }
-                    });
+                    if (isSuccess) {
+                      GoRouter.of(
+                        context,
+                      ).pushReplacementNamed(AppRouteName.home);
+                    }
                   } else {
                     setState(() {
                       autovalidateMode = AutovalidateMode.always;

@@ -1,10 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
+import 'package:grocery_app/core/utils/di/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/home/view/widgets/product_section.dart';
+import 'package:grocery_app/features/order/model/order_items_model.dart';
 import 'package:grocery_app/features/order/viewModel/order_viem_model.dart';
 import 'package:grocery_app/features/payment/model/payment_model.dart';
 import 'package:grocery_app/features/payment/viewmodel/payment_view_model.dart';
@@ -61,7 +64,13 @@ class CartView extends StatelessWidget {
                               );
 
                             final item = sortedItems[index];
-                            return _buildCartItem(context, cartVM, item);
+                            return GestureDetector(
+                              onTap: () => context.pushNamed(
+                                AppRouteName.productDetails,
+                                extra: item.product,
+                              ),
+                              child: _buildCartItem(context, cartVM, item),
+                            );
                           },
                         ),
                       ),
@@ -87,75 +96,93 @@ class CartView extends StatelessWidget {
       },
 
       background: Container(
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(12),
+        ),
         padding: const EdgeInsets.only(right: 20),
         alignment: Alignment.centerRight,
-        color: Colors.red,
+
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       direction: DismissDirection.endToStart,
-      child: ListTile(
-        leading: CachedNetworkImage(
-          imageUrl: item.product!.image!,
-          errorWidget: (ctx, url, error) =>
-              const Icon(Icons.broken_image, color: Colors.grey),
-          placeholder: (ctx, url) => const LoadingGridItem(),
-          width: 50,
-          height: 50,
-        ),
-        title: Text(
-          item.product!.title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text("\$${item.price} • Qty: ${item.quantity}"),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              onPressed: () {
-                if (item.quantity > 1) {
-                  cartVM.updateQuantity(
-                    productId: item.productId,
-                    cartId: item.id,
-                    quantity: item.quantity - 1,
-                  );
-                }
-              },
-              icon: const Icon(Icons.remove),
-            ),
-            cartVM.isItemLoading(item.productId)
-                ? SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: AppColors.primaryDark,
-                      strokeWidth: 4,
-                    ),
-                  )
-                : Text(
-                    item.quantity.toString(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-            IconButton(
-              onPressed: () {
-                if (item.quantity < item.product!.quantity) {
-                  cartVM.updateQuantity(
-                    productId: item.productId,
-                    cartId: item.id,
-                    quantity: item.quantity + 1,
-                  );
-                } else {
-                  ShowToast.showError(
-                    "we have only ${item.product!.quantity} of this product",
-                  );
-                }
-              },
-              icon: const Icon(Icons.add, color: Colors.green),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
+        ),
+        child: ListTile(
+          leading: CachedNetworkImage(
+            imageUrl: item.product!.image!,
+            errorWidget: (ctx, url, error) =>
+                const Icon(Icons.broken_image, color: Colors.grey),
+            placeholder: (ctx, url) => const LoadingGridItem(),
+            width: 50,
+            height: 50,
+          ),
+          title: Text(
+            item.product!.title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text("\$${item.price} • Qty: ${item.quantity}"),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () {
+                  if (item.quantity > 1) {
+                    cartVM.updateQuantity(
+                      productId: item.productId,
+                      cartId: item.id,
+                      quantity: item.quantity - 1,
+                    );
+                  }
+                },
+                icon: const Icon(Icons.remove),
+              ),
+              cartVM.isItemLoading(item.productId)
+                  ? SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryDark,
+                        strokeWidth: 4,
+                      ),
+                    )
+                  : Text(
+                      item.quantity.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+              IconButton(
+                onPressed: () {
+                  if (item.quantity < item.product!.quantity) {
+                    cartVM.updateQuantity(
+                      productId: item.productId,
+                      cartId: item.id,
+                      quantity: item.quantity + 1,
+                    );
+                  } else {
+                    ShowToast.showError(
+                      "we have only ${item.product!.quantity} of this product",
+                    );
+                  }
+                },
+                icon: const Icon(Icons.add, color: Colors.green),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -203,11 +230,12 @@ class CartView extends StatelessWidget {
                   orderId: orderId,
                   items: cartVM.cartItems
                       .map(
-                        (e) => {
-                          "product_id": e.productId,
-                          "quantity": e.quantity,
-                          "price": e.price,
-                        },
+                        (item) => OrderItemModel(
+                          orderId: orderId,
+                          productId: item.productId,
+                          quantity: item.quantity,
+                          price: item.price,
+                        ),
                       )
                       .toList(),
                 );
@@ -252,12 +280,10 @@ class CartView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: cartVM.isLoading
-                ? const CircularProgressIndicator(color: Colors.white)
-                : Text(
-                    "Checkout",
-                    style: AppStyles.textBold15.copyWith(color: Colors.white),
-                  ),
+            child: Text(
+              "Checkout",
+              style: AppStyles.textBold15.copyWith(color: Colors.white),
+            ),
           ),
         ],
       ),

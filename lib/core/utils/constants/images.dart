@@ -1,24 +1,30 @@
 class AppImages {
   // onboarding images
   static const String onBoardingImage1 =
-      "assets/images/onboarding/Online Groceries-cuate 1.svg";
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/onboarding/Online%20Groceries-cuate%201.svg";
   static const String onBoardingImage2 =
-      "assets/images/onboarding/Online Groceries-cuate 1.svg";
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/onboarding/Delivery-cuate%201.svg";
   static const String onBoardingImage3 =
-      "assets/images/onboarding/Online Groceries-cuate 1.svg";
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/onboarding/Passionate-cuate%201.svg";
 
   // auth images
 
   static const String auth =
-      "assets/images/auth/element5-digital-CpBBsda2eRI-unsplash.png";
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/auth/element5-digital-CpBBsda2eRI-unsplash.png";
 
   // category images
-  static const String vegetables = "assets/images/home/Vegetables.svg";
-  static const String fruits = "assets/images/home/fruits.svg";
-  static const String beverages = "assets/images/home/Beverages.svg";
-  static const String grocery = "assets/images/home/Grocery.svg";
-  static const String edibleOil = "assets/images/home/Edible oil.svg";
-  static const String household = "assets/images/home/Household.svg";
+  static const String vegetables =
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/home/Vegetables.svg";
+  static const String fruits =
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/home/fruits.svg";
+  static const String beverages =
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/home/Beverages.svg";
+  static const String grocery =
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/home/Grocery.svg";
+  static const String edibleOil =
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/home/Edible%20oil.svg";
+  static const String household =
+      "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/home/Household.svg";
 
   //carousel images
   static const String carousel1 =

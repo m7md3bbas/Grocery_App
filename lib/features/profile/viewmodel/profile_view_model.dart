@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/repos/profile/profile_repo.dart';
 import 'package:grocery_app/core/service/auth/auth_service.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
+import 'package:grocery_app/core/utils/di/dependancy_injection.dart';
 import 'package:grocery_app/core/utils/error/failure.dart';
 import 'package:image_picker/image_picker.dart';
 import '../model/user_model.dart';
