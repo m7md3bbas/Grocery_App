@@ -1,21 +1,23 @@
 import 'package:grocery_app/core/service/dio/base_class.dart';
+import 'package:grocery_app/core/utils/dependancy_injection.dart';
 import 'package:grocery_app/core/utils/error/failure.dart';
+import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/cart/model/cart_model.dart';
 
 class CartService {
   final DioBaseClient dioClient;
   final String table = 'user_cart';
+  final currentUserId = locator<AuthViewModel>().getCurrentUser()!.id;
 
   CartService({required this.dioClient});
 
-  /// ✅ جلب كل العناصر في الكارت لليوزر
-  Future<List<CartModel>> getUserCart(String userId) async {
+  Future<List<CartModel>> getUserCart() async {
     try {
       final response = await dioClient.get(
         url: '/$table',
         queryParameters: {
-          'user_id': 'eq.$userId',
-          'select': '*, product:product_id(*)', // join مع جدول المنتجات
+          'user_id': 'eq.$currentUserId',
+          'select': '*, product:product_id(*)',
         },
       );
 
@@ -28,7 +30,6 @@ class CartService {
 
   /// ✅ إضافة منتج للكارت
   Future<void> addToCart({
-    required String userId,
     required String productId,
     required int quantity,
     required double price,
@@ -37,7 +38,7 @@ class CartService {
       await dioClient.post(
         url: '/$table',
         body: {
-          "user_id": userId,
+          "user_id": currentUserId,
           "product_id": productId,
           "quantity": quantity,
           "price": price,
@@ -80,11 +81,11 @@ class CartService {
   }
 
   /// ✅ إفراغ الكارت بالكامل
-  Future<void> clearCart(String userId) async {
+  Future<void> clearCart() async {
     try {
       await dioClient.delete(
         url: '/$table',
-        queryParameters: {"user_id": "eq.$userId"},
+        queryParameters: {"user_id": "eq.$currentUserId"},
       );
     } catch (e) {
       throw Failure("Failed to clear cart: $e");

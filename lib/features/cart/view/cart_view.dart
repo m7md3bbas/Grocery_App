@@ -4,6 +4,7 @@ import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
+import 'package:grocery_app/features/home/view/widgets/product_section.dart';
 import 'package:grocery_app/features/order/viewModel/order_viem_model.dart';
 import 'package:grocery_app/features/payment/model/payment_model.dart';
 import 'package:grocery_app/features/payment/viewmodel/payment_view_model.dart';
@@ -30,9 +31,7 @@ class CartView extends StatelessWidget {
           body: RefreshIndicator(
             color: Colors.green,
             onRefresh: () async {
-              await cartVM.fetchCartItems(
-                locator<AuthViewModel>().getCurrentUser()!.id,
-              );
+              await cartVM.fetchCartItems();
             },
             child: cartVM.cartItems.isEmpty
                 ? Center(
@@ -84,7 +83,7 @@ class CartView extends StatelessWidget {
       key: ValueKey(item.id),
       onDismissed: (_) {
         context.read<CartViewModel>().removeLocal(item.id);
-        cartVM.removeFromCart(item.userId, item.id, item.productId);
+        cartVM.removeFromCart(item.id, item.productId);
       },
 
       background: Container(
@@ -97,6 +96,9 @@ class CartView extends StatelessWidget {
       child: ListTile(
         leading: CachedNetworkImage(
           imageUrl: item.product!.image!,
+          errorWidget: (ctx, url, error) =>
+              const Icon(Icons.broken_image, color: Colors.grey),
+          placeholder: (ctx, url) => const LoadingGridItem(),
           width: 50,
           height: 50,
         ),
@@ -113,7 +115,6 @@ class CartView extends StatelessWidget {
                 if (item.quantity > 1) {
                   cartVM.updateQuantity(
                     productId: item.productId,
-                    userId: item.userId,
                     cartId: item.id,
                     quantity: item.quantity - 1,
                   );
@@ -143,7 +144,6 @@ class CartView extends StatelessWidget {
                 if (item.quantity < item.product!.quantity) {
                   cartVM.updateQuantity(
                     productId: item.productId,
-                    userId: item.userId,
                     cartId: item.id,
                     quantity: item.quantity + 1,
                   );
@@ -195,7 +195,6 @@ class CartView extends StatelessWidget {
           ElevatedButton(
             onPressed: () async {
               final orderId = await context.read<OrderViewModel>().createOrder(
-                userId: context.read<AuthViewModel>().getCurrentUser()!.id,
                 totalPrice: total,
               );
 
@@ -225,11 +224,26 @@ class CartView extends StatelessWidget {
                       status: "Paid",
                     ),
                   )
-                  .then(
-                    (_) => context.read<CartViewModel>().clearCart(
-                      locator.get<AuthViewModel>().getCurrentUser()!.id,
-                    ),
-                  );
+                  .then((value) {
+                    if (value) {
+                      context
+                          .read<OrderViewModel>()
+                          .updateOrderStatus(
+                            orderId: orderId,
+                            status: "Completed",
+                            paymentStatus: "Paid",
+                          )
+                          .then(
+                            (value) => ShowToast.showSuccess("Payment success"),
+                          )
+                          .then(
+                            (value) =>
+                                context.read<CartViewModel>().clearCart(),
+                          );
+                    } else {
+                      ShowToast.showError("Payment canceled");
+                    }
+                  });
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,

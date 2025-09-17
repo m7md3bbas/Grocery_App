@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
 import 'package:grocery_app/features/home/viewmodel/home_view_model.dart';
 import 'package:provider/provider.dart';
@@ -24,9 +25,10 @@ class CaregorySection extends StatelessWidget {
               final color = (int.parse(category.color));
               return GestureDetector(
                 onTap: () {
-                  GoRouter.of(
-                    context,
-                  ).push(AppRouteName.categoryDetails, extra: category);
+                  context.pushNamed(
+                    AppRouteName.categoryDetails,
+                    extra: category,
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),

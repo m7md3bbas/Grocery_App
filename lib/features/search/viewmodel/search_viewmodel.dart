@@ -38,8 +38,6 @@ class SearchViewModel extends ChangeNotifier {
           page: _currentPage,
           pageSize: 10,
         );
-
-        // فلترة بعد ما ييجي الـ data من الـ API
         final filtered = products.where((product) {
           final name = product.title.toLowerCase();
           final search = query.toLowerCase();

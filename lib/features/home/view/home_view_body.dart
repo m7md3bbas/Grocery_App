@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
 import 'package:grocery_app/core/widgets/dismisskeyboard.dart';
@@ -36,8 +37,7 @@ class HomeViewBody extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.all(8.0),
                       child: CustomTextFormField(
-                        ontap: () =>
-                            GoRouter.of(context).push(AppRouteName.search),
+                        ontap: () => context.goNamed(AppRouteName.search),
                         readOnly: true,
                         hintText: "Search",
                         prefixIcon: Icon(Icons.search),
@@ -124,7 +124,6 @@ class HomeViewBody extends StatelessWidget {
                                       viewModel.removeFromCart(
                                         item.userId,
                                         item.id,
-                                        item.productId,
                                       );
                                     },
                                     child: Icon(
@@ -141,7 +140,9 @@ class HomeViewBody extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       GestureDetector(
-                        onTap: () => context.push(AppRouteName.cart),
+                        onTap: () =>
+                            StatefulNavigationShell.of(context).goBranch(1),
+
                         child: Icon(
                           FontAwesomeIcons.bagShopping,
                           size: 35,

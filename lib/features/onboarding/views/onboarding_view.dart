@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
 import 'package:grocery_app/features/onboarding/viewModel/onboarding_view_model_model.dart';
@@ -37,7 +38,7 @@ class OnboardingView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () => GoRouter.of(context).go(AppRouteName.auth),
+                    onPressed: () => context.goNamed(AppRouteName.authWelcome),
                     child: Text(
                       "Skip",
                       style: AppStyles.textMedium15.copyWith(
@@ -70,7 +71,7 @@ class OnboardingView extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       if (ref.currentPage == ref.onboardingModel.length - 1) {
-                        GoRouter.of(context).go(AppRouteName.auth);
+                        context.goNamed(AppRouteName.authWelcome);
                       } else {
                         controller.nextPage(
                           duration: const Duration(milliseconds: 300),

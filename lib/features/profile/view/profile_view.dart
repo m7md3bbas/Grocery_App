@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
@@ -152,21 +153,17 @@ class ProfileView extends StatelessWidget {
                             _buildMenuItem(
                               Icons.person_outline,
                               "About me",
-                              () => GoRouter.of(
-                                context,
-                              ).push(AppRouteName.aboutMe),
+                              () => context.pushNamed(AppRouteName.aboutMe),
                             ),
                             _buildMenuItem(
                               Icons.shopping_bag_outlined,
                               "My Orders",
-                              () {},
+                              () => context.pushNamed(AppRouteName.order),
                             ),
                             _buildMenuItem(
                               Icons.favorite_border,
                               "My Favorites",
-                              () => GoRouter.of(
-                                context,
-                              ).push(AppRouteName.favorite),
+                              () => context.pushNamed(AppRouteName.favorite),
                             ),
                             _buildMenuItem(
                               Icons.location_on_outlined,
@@ -203,11 +200,6 @@ class ProfileView extends StatelessWidget {
                                           'google') {
                                         await GoogleSignIn().signOut();
                                       }
-
-                                      await viewModel.logout();
-                                      GoRouter.of(
-                                        context,
-                                      ).go(AppRouteName.initial);
                                     },
                                   ),
                             ),

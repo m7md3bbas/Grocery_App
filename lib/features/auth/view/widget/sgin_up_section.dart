@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
 import 'package:grocery_app/core/utils/validation/auth/auth_validation.dart';
@@ -98,7 +99,7 @@ class _SginUpSectionState extends State<SginUpSection> {
                     );
                     result.then((value) {
                       if (value) {
-                        GoRouter.of(context).go(AppRouteName.home);
+                        context.goNamed(AppRouteName.home);
                       } else {
                         ShowToast.showError(viewModel.error);
                       }

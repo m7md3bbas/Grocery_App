@@ -1,13 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:grocery_app/core/service/dio/base_class.dart';
+import 'package:grocery_app/core/utils/dependancy_injection.dart';
+import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/order/model/order_model.dart';
 
 class OrderService {
   final DioBaseClient dioClient;
-
+  final userId = locator<AuthViewModel>().getCurrentUser()!.id;
   OrderService({required this.dioClient});
 
-  Future<List<OrderModel>> getUserOrders(String userId) async {
+  Future<List<OrderModel>> getUserOrders() async {
     final response = await dioClient.get(
       url: 'orders',
       queryParameters: {
@@ -21,10 +23,7 @@ class OrderService {
     return data.map((json) => OrderModel.fromJson(json)).toList();
   }
 
-  Future<String?> createOrder({
-    required String userId,
-    required double totalPrice,
-  }) async {
+  Future<String?> createOrder({required double totalPrice}) async {
     final response = await dioClient.post(
       url: 'orders?select=id',
       options: Options(headers: {'Prefer': 'return=representation'}),
@@ -57,6 +56,18 @@ class OrderService {
         },
       );
     }
+  }
+
+  Future<void> updateOrder(
+    String status,
+    String orderId,
+    String paymentStatus,
+  ) async {
+    await dioClient.patch(
+      url: 'orders',
+      queryParameters: {'id': 'eq.$orderId'},
+      data: {'status': status, 'payment_status': paymentStatus},
+    );
   }
 
   Future<void> cancelOrder(String orderId) async {

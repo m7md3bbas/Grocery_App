@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
 import 'package:grocery_app/features/order/viewModel/order_viem_model.dart';
@@ -25,7 +26,7 @@ class OrderScreen extends StatelessWidget {
                   itemCount: viewModel.orders.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                      onTap: () => GoRouter.of(context).push(
+                      onTap: () => context.pushNamed(
                         AppRouteName.orderDetails,
                         extra: viewModel.orders[index],
                       ),

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/core/routes/app_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
@@ -57,9 +58,10 @@ class FavoriteView extends StatelessWidget {
                   final product = favorite[index].product;
 
                   return GestureDetector(
-                    onTap: () => GoRouter.of(
-                      context,
-                    ).push(AppRouteName.productDetails, extra: product),
+                    onTap: () => context.goNamed(
+                      AppRouteName.productDetails,
+                      extra: product,
+                    ),
                     child: _buildFavoriteItem(
                       product: product,
                       onRemove: () async {

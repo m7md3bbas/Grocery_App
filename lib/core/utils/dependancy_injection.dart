@@ -30,57 +30,67 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final locator = GetIt.instance;
 
 void setupLocator() {
-  locator.registerFactory<SupabaseClient>(() => Supabase.instance.client);
-  locator.registerFactory<DioBaseClient>(() => DioBaseClient(dio: Dio()));
-  locator.registerFactory<AuthService>(
+  // Core
+  locator.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
+  locator.registerLazySingleton<DioBaseClient>(() => DioBaseClient(dio: Dio()));
+
+  // Services
+  locator.registerLazySingleton<AuthService>(
     () => AuthServiceImp(supabaseClient: locator<SupabaseClient>()),
   );
-  locator.registerFactory<ProfileService>(
+  locator.registerLazySingleton<ProfileService>(
     () => ProfileService(
       dio: locator<DioBaseClient>(),
       supabaseClient: locator<SupabaseClient>(),
     ),
   );
-  locator.registerFactory<ProductService>(
+  locator.registerLazySingleton<ProductService>(
     () => ProductService(dio: locator<DioBaseClient>()),
   );
-  locator.registerFactory<CategoryService>(
+  locator.registerLazySingleton<CategoryService>(
     () => CategoryService(dio: locator<DioBaseClient>()),
   );
-  locator.registerFactory<CartService>(
+  locator.registerLazySingleton<CartService>(
     () => CartService(dioClient: locator<DioBaseClient>()),
   );
-  locator.registerFactory<FavoriteService>(
+  locator.registerLazySingleton<FavoriteService>(
     () => FavoriteService(dioBaseClient: locator<DioBaseClient>()),
   );
-  locator.registerFactory<OrderService>(
+  locator.registerLazySingleton<OrderService>(
     () => OrderService(dioClient: locator<DioBaseClient>()),
   );
+  locator.registerLazySingleton<PaymentService>(
+    () => PaymentService(dioBaseClient: locator<DioBaseClient>()),
+  );
 
-  locator.registerFactory<ProfileRepo>(
+  // Repos
+  locator.registerLazySingleton<ProfileRepo>(
     () => ProfileRepo(profileService: locator<ProfileService>()),
   );
-  locator.registerFactory<ProductRepos>(
+  locator.registerLazySingleton<ProductRepos>(
     () => ProductRepos(productService: locator<ProductService>()),
   );
-  locator.registerFactory<AuthRepo>(
+  locator.registerLazySingleton<AuthRepo>(
     () => AuthRepo(authService: locator<AuthService>()),
   );
-  locator.registerFactory<CartRepo>(() => CartRepo(locator<CartService>()));
-  locator.registerFactory<CategoryRepo>(
+  locator.registerLazySingleton<CartRepo>(
+    () => CartRepo(locator<CartService>()),
+  );
+  locator.registerLazySingleton<CategoryRepo>(
     () => CategoryRepo(categoryService: locator<CategoryService>()),
   );
-  locator.registerFactory<FavoriteRepo>(
+  locator.registerLazySingleton<FavoriteRepo>(
     () => FavoriteRepo(favoriteService: locator<FavoriteService>()),
   );
 
-  locator.registerLazySingleton<AuthViewModel>(
+  // ViewModels
+  locator.registerFactory<AuthViewModel>(
     () => AuthViewModel(authRepo: locator<AuthRepo>()),
   );
-  locator.registerLazySingleton<CartViewModel>(
+  locator.registerFactory<CartViewModel>(
     () => CartViewModel(locator<CartRepo>()),
   );
-  locator.registerLazySingleton<ProfileViewModel>(
+  locator.registerFactory<ProfileViewModel>(
     () => ProfileViewModel(profileRepo: locator<ProfileRepo>()),
   );
   locator.registerLazySingleton<FavoriteViewModel>(
@@ -89,22 +99,17 @@ void setupLocator() {
   locator.registerLazySingleton<OnboardingViewModel>(
     () => OnboardingViewModel(),
   );
-
   locator.registerFactory<HomeViewModel>(
     () => HomeViewModel(
       productRepos: locator<ProductRepos>(),
       categoryRepos: locator<CategoryRepo>(),
     ),
   );
-  locator.registerFactory(
+  locator.registerFactory<OrderViewModel>(
     () => OrderViewModel(orderService: locator<OrderService>()),
   );
-
-  locator.registerFactory<PaymentManager>(() => PaymentManager());
-  locator.registerFactory<PaymentService>(
-    () => PaymentService(dioBaseClient: locator<DioBaseClient>()),
-  );
-  locator.registerFactory(
+  locator.registerLazySingleton<PaymentManager>(() => PaymentManager());
+  locator.registerFactory<PaymentViewModel>(
     () => PaymentViewModel(
       paymentManager: locator<PaymentManager>(),
       paymentService: locator<PaymentService>(),

@@ -272,14 +272,12 @@ class ProductDetailScreen extends StatelessWidget {
                             if (quantity > 1) {
                               cartVm.updateQuantity(
                                 productId: product.id,
-                                userId: userId,
                                 cartId: cartVm.getCartId(product),
                                 quantity: quantity - 1,
                               );
                             } else {
                               cartVm
                                   .removeFromCart(
-                                    userId,
                                     cartVm.getCartId(product),
                                     product.id,
                                   )
@@ -330,7 +328,6 @@ class ProductDetailScreen extends StatelessWidget {
                                     .id;
                                 cartVm.updateQuantity(
                                   productId: product.id,
-                                  userId: userId,
                                   cartId: cartVm.getCartId(product),
                                   quantity: quantity + 1,
                                 );
@@ -354,7 +351,6 @@ class ProductDetailScreen extends StatelessWidget {
                                       .getCurrentUser()!
                                       .id;
                                   cartVm.addToCart(
-                                    userId: userId,
                                     productId: product.id,
                                     quantity: 1,
                                     price: product.price,

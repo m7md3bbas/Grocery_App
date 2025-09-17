@@ -8,6 +8,8 @@ import 'package:grocery_app/features/home/viewmodel/home_view_model.dart';
 import 'package:grocery_app/features/home/model/product_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/routes/route_name.dart';
+
 class CategoryProductSection extends StatelessWidget {
   const CategoryProductSection({super.key});
 
@@ -72,9 +74,10 @@ class CategoryProductSection extends StatelessWidget {
                 ],
               ),
               TextButton(
-                onPressed: () => GoRouter.of(
-                  context,
-                ).push(AppRouteName.categoryDetails, extra: category),
+                onPressed: () => context.goNamed(
+                  AppRouteName.categoryDetails,
+                  extra: category,
+                ),
                 child: Text(
                   "See All",
                   style: AppStyles.textMedium15.copyWith(color: Colors.black),
@@ -96,23 +99,32 @@ class CategoryProductSection extends StatelessWidget {
               }
               return false;
             },
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              itemCount: products.length + (isLoading ? 3 : 0),
-              itemBuilder: (context, index) {
-                if (index < products.length) {
-                  final product = products[index];
-                  return Container(
-                    width: 160,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    child: ProductItem(product: product),
-                  );
-                } else {
-                  return const LoadingGridItem();
-                }
-              },
-            ),
+            child: isLoading
+                ? ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return const LoadingGridItem();
+                    },
+                  )
+                : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    itemCount: products.length + (isLoading ? 3 : 0),
+                    itemBuilder: (context, index) {
+                      if (index < products.length) {
+                        final product = products[index];
+                        return Container(
+                          width: 160,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          child: ProductItem(product: product),
+                        );
+                      } else {
+                        return const LoadingGridItem();
+                      }
+                    },
+                  ),
           ),
         ),
       ],

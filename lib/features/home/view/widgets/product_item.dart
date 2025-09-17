@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grocery_app/core/routes/app_router.dart';
+import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
 import 'package:grocery_app/core/utils/dependancy_injection.dart';
@@ -10,6 +10,7 @@ import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/cart/viewmodel/cart_view_model.dart';
 import 'package:grocery_app/features/favorite/viewmodel/favorite_view_model.dart';
 import 'package:grocery_app/features/home/model/product_model.dart';
+import 'package:grocery_app/features/home/view/widgets/product_section.dart';
 import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
@@ -19,9 +20,8 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => GoRouter.of(
-        context,
-      ).push(AppRouteName.productDetails, extra: product),
+      onTap: () =>
+          context.pushNamed(AppRouteName.productDetails, extra: product),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -49,6 +49,11 @@ class ProductItem extends StatelessWidget {
 
             CachedNetworkImage(
               imageUrl: product.image!,
+              placeholder: (ctx, url) => const Center(child: LoadingGridItem()),
+              errorWidget: (ctx, url, error) =>
+                  const Icon(Icons.broken_image, color: Colors.grey),
+
+              width: 90,
               height: 90,
               fit: BoxFit.cover,
             ),
@@ -177,7 +182,6 @@ class ProductItem extends StatelessWidget {
     await context
         .read<CartViewModel>()
         .addToCart(
-          userId: context.read<AuthViewModel>().getCurrentUser()!.id,
           productId: product.id,
           quantity: context.read<CartViewModel>().getQuantity(product) + 1,
           price: product.price,
@@ -197,7 +201,6 @@ class ProductItem extends StatelessWidget {
     if (currentQuantity < product.quantity) {
       cartVm.updateQuantity(
         productId: product.id,
-        userId: userId,
         cartId: cartVm.getCartId(product),
         quantity: currentQuantity + 1,
       );
@@ -207,23 +210,20 @@ class ProductItem extends StatelessWidget {
   }
 
   void _handleDecrease(BuildContext context, ProductModel product) {
-    final userId = locator<AuthViewModel>().getCurrentUser()!.id;
     final cartVm = context.read<CartViewModel>();
     final currentQuantity = cartVm.getQuantity(product);
 
     if (currentQuantity > 1) {
       cartVm.updateQuantity(
         productId: product.id,
-        userId: userId,
         cartId: cartVm.getCartId(product),
         quantity: currentQuantity - 1,
       );
     } else if (currentQuantity == 1) {
-      cartVm.removeFromCart(userId, cartVm.getCartId(product), product.id).then(
-        (_) {
-          ShowToast.showError("${product.title} removed from cart");
-        },
-      );
+      final cardId = cartVm.getCartId(product);
+      cartVm.removeFromCart(cardId, product.id).then((_) {
+        ShowToast.showError("${product.title} removed from cart");
+      });
     }
   }
 

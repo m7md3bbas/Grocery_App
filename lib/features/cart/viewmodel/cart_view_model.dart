@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/repos/cart/cart_repo.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
-import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/cart/model/cart_model.dart';
 import 'package:grocery_app/features/home/model/product_model.dart';
 
@@ -9,17 +7,13 @@ class CartViewModel extends ChangeNotifier {
   final CartRepo _cartRepo;
 
   CartViewModel(this._cartRepo) {
-    final user = locator<AuthViewModel>().getCurrentUser();
-    if (user != null) {
-      fetchCartItems(user.id);
-    }
+    fetchCartItems();
   }
 
   bool _isLoading = false;
   String _error = '';
   List<CartModel> _cartItems = [];
 
-  /// عشان نعرف انهي منتج بيتعمله update / add / remove دلوقتي
   final Map<String, bool> _itemLoading = {};
 
   bool get isLoading => _isLoading;
@@ -30,11 +24,11 @@ class CartViewModel extends ChangeNotifier {
     return _itemLoading[productId] ?? false;
   }
 
-  Future<void> fetchCartItems(String userId) async {
+  Future<void> fetchCartItems() async {
     _isLoading = true;
     notifyListeners();
     try {
-      _cartItems = await _cartRepo.getUserCart(userId);
+      _cartItems = await _cartRepo.getUserCart();
       _isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -45,7 +39,6 @@ class CartViewModel extends ChangeNotifier {
   }
 
   Future<bool> addToCart({
-    required String userId,
     required String productId,
     required int quantity,
     required double price,
@@ -53,13 +46,12 @@ class CartViewModel extends ChangeNotifier {
     _setItemLoading(productId, true);
     try {
       await _cartRepo.addToCart(
-        userId: userId,
         productId: productId,
         quantity: quantity,
         price: price,
       );
 
-      await fetchCartItems(userId);
+      await fetchCartItems();
       return true;
     } catch (e) {
       _error = e.toString();
@@ -70,19 +62,14 @@ class CartViewModel extends ChangeNotifier {
   }
 
   Future<void> updateQuantity({
-    required String userId,
     required String cartId,
     required String productId,
     required int quantity,
   }) async {
     _setItemLoading(productId, true);
     try {
-      await _cartRepo.updateQuantity(
-        userId: userId,
-        cartId: cartId,
-        quantity: quantity,
-      );
-      await fetchCartItems(userId);
+      await _cartRepo.updateQuantity(cartId: cartId, quantity: quantity);
+      await fetchCartItems();
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -113,14 +100,10 @@ class CartViewModel extends ChangeNotifier {
     return index != -1;
   }
 
-  Future<void> removeFromCart(
-    String userId,
-    String cartId,
-    String productId,
-  ) async {
+  Future<void> removeFromCart(String cartId, String productId) async {
     _setItemLoading(productId, true);
     try {
-      await _cartRepo.removeFromCart(userId, cartId);
+      await _cartRepo.removeFromCart(cartId);
       _cartItems.removeWhere((item) => item.id == cartId);
     } catch (e) {
       _error = e.toString();
@@ -134,11 +117,11 @@ class CartViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> clearCart(String userId) async {
+  Future<void> clearCart() async {
     _isLoading = true;
     notifyListeners();
     try {
-      await _cartRepo.clearCart(userId).then((value) => _cartItems = []);
+      await _cartRepo.clearCart().then((value) => _cartItems = []);
     } catch (e) {
       _error = e.toString();
     } finally {

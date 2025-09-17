@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/service/order/order_service.dart';
-import 'package:grocery_app/core/utils/dependancy_injection.dart';
-import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/order/model/order_model.dart';
 
 class OrderViewModel extends ChangeNotifier {
@@ -44,29 +42,39 @@ class OrderViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Fetch all orders for current user
   Future<void> getOrders() async {
     setLoading(true);
     try {
-      orders = await orderService.getUserOrders(
-        locator.get<AuthViewModel>().getCurrentUser()!.id,
-      );
+      final result = await orderService.getUserOrders();
+      orders = result.where((order) => order.status != 'canceled').toList();
       setSuccess();
     } catch (e) {
       setError(e.toString());
     }
   }
 
-  Future<String?> createOrder({
-    required String userId,
-    required double totalPrice,
+  Future<void> updateOrderStatus({
+    required String orderId,
+    required String status,
+    required String paymentStatus,
   }) async {
     setLoading(true);
     try {
-      final orderId = await orderService.createOrder(
-        userId: userId,
-        totalPrice: totalPrice,
-      );
+      await orderService.updateOrder(status, orderId, paymentStatus);
+      final index = orders.indexWhere((o) => o.id == orderId);
+      if (index != -1) {
+        orders[index] = orders[index].copyWith(status: status);
+      }
+      setSuccess();
+    } catch (e) {
+      setError(e.toString());
+    }
+  }
+
+  Future<String?> createOrder({required double totalPrice}) async {
+    setLoading(true);
+    try {
+      final orderId = await orderService.createOrder(totalPrice: totalPrice);
       setLoading(false);
       return orderId;
     } catch (e) {
@@ -88,7 +96,6 @@ class OrderViewModel extends ChangeNotifier {
     }
   }
 
-  // Cancel order
   Future<void> cancelOrder(String orderId) async {
     setLoading(true);
     try {

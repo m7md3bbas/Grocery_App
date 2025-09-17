@@ -35,24 +35,32 @@ class PaymentViewModel extends ChangeNotifier {
 
   String get error => _error;
 
-  Future<void> newPayment({required PaymentModel payment}) async {
+  Future<bool> newPayment({required PaymentModel payment}) async {
     try {
       setLoading(true);
       final amount = int.parse(
         payment.amount.toStringAsFixed(0).replaceAll(',', ''),
       );
-      await paymentManager.makePayment(amount, "USD").then((value) {
+      final result = await paymentManager.makePayment(amount, "USD").then((
+        value,
+      ) {
         if (value == PaymentStatus.success) {
           setSuccess();
           paymentService.newPayment(payment: payment);
+          return true;
         } else if (value == PaymentStatus.canceled) {
           setError("Canceled");
+          return false;
         } else {
           setError("Failed");
+          return false;
         }
       });
+      setLoading(false);
+      return result;
     } catch (e) {
       setError(e.toString());
+      return false;
     }
   }
 }
