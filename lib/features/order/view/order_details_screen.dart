@@ -51,7 +51,7 @@ class OrderDetailsScreen extends StatelessWidget {
             else
               Expanded(
                 child: ListView.builder(
-                  itemCount: order.orderItems.length + 1, // +1 عشان الزرار
+                  itemCount: order.orderItems.length + 1,
                   itemBuilder: (context, index) {
                     if (index < order.orderItems.length) {
                       final item = order.orderItems[index];
@@ -71,53 +71,55 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                       );
                     } else {
-                      // الزرار بعد آخر أيتم
-                      return SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await context
-                                .read<PaymentViewModel>()
-                                .newPayment(
-                                  payment: PaymentModel(
-                                    orderId: order.id,
-                                    userId: order.userId,
-                                    amount: order.totalPrice,
-                                    method: "Credit Card",
-                                    status: "Paid",
-                                  ),
-                                )
-                                .then((value) {
-                                  if (value) {
-                                    context
-                                        .read<OrderViewModel>()
-                                        .updateOrderStatus(
+                      return order.paymentStatus == "Paid"
+                          ? const SizedBox.shrink()
+                          : SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await context
+                                      .read<PaymentViewModel>()
+                                      .newPayment(
+                                        payment: PaymentModel(
                                           orderId: order.id,
-                                          status: "Completed",
-                                          paymentStatus: "Paid",
-                                        )
-                                        .then(
-                                          (value) => ShowToast.showSuccess(
-                                            "Payment success",
-                                          ),
-                                        )
-                                        .then((_) => context.pop());
-                                  } else {
-                                    ShowToast.showError(
-                                      "Payment Failed or Canceled",
-                                    );
-                                  }
-                                });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                          ),
-                          child: const Text(
-                            "Checkout",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      );
+                                          userId: order.userId,
+                                          amount: order.totalPrice,
+                                          method: "Credit Card",
+                                          status: "Paid",
+                                        ),
+                                      )
+                                      .then((value) {
+                                        if (value) {
+                                          context
+                                              .read<OrderViewModel>()
+                                              .updateOrderStatus(
+                                                orderId: order.id,
+                                                status: "Completed",
+                                                paymentStatus: "Paid",
+                                              )
+                                              .then(
+                                                (value) =>
+                                                    ShowToast.showSuccess(
+                                                      "Payment success",
+                                                    ),
+                                              )
+                                              .then((_) => context.pop());
+                                        } else {
+                                          ShowToast.showError(
+                                            "Payment Failed or Canceled",
+                                          );
+                                        }
+                                      });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                ),
+                                child: const Text(
+                                  "Checkout",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            );
                     }
                   },
                 ),

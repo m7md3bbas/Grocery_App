@@ -198,8 +198,18 @@ class ProfileView extends StatelessWidget {
                                       if (currentUser
                                               ?.appMetadata['provider'] ==
                                           'google') {
-                                        await GoogleSignIn().signOut();
+                                        await GoogleSignIn().signOut().then(
+                                          (_) => context.goNamed(
+                                            AppRouteName.signIn,
+                                          ),
+                                        );
                                       }
+
+                                      await viewModel.logout().then(
+                                        (_) => context.goNamed(
+                                          AppRouteName.signIn,
+                                        ),
+                                      );
                                     },
                                   ),
                             ),

@@ -140,8 +140,7 @@ class HomeViewBody extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       GestureDetector(
-                        onTap: () =>
-                            StatefulNavigationShell.of(context).goBranch(1),
+                        onTap: () => context.goNamed(AppRouteName.cart),
 
                         child: Icon(
                           FontAwesomeIcons.bagShopping,

@@ -18,49 +18,47 @@ class OrderScreen extends StatelessWidget {
         onRefresh: () async => viewModel.getOrders(),
         child: Scaffold(
           appBar: AppBar(title: const Text("Orders"), centerTitle: true),
-          body: viewModel.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.all(12),
-                  itemCount: viewModel.orders.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => context.pushNamed(
-                        AppRouteName.orderDetails,
-                        extra: viewModel.orders[index],
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: AppColors.primaryLight,
-                        ),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: AppColors.primaryLight,
-                            radius: 45,
-                            child: Icon(
-                              FontAwesomeIcons.bagShopping,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                          title: Text(
-                            "Order ID: ${viewModel.orders[index].orderNumber}",
-                            style: AppStyles.textBold15,
-                          ),
-                          subtitle: Text(
-                            "Date: ${viewModel.orders[index].createdAt.toString().substring(0, 10)}",
-                            style: AppStyles.textMedium12,
-                          ),
-                          trailing: Text(
-                            viewModel.orders[index].status,
-                            style: AppStyles.textBold15,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+          body: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(12),
+            itemCount: viewModel.orders.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () => context.pushNamed(
+                  AppRouteName.orderDetails,
+                  extra: viewModel.orders[index],
                 ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.primaryLight,
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: AppColors.primaryLight,
+                      radius: 45,
+                      child: Icon(
+                        FontAwesomeIcons.bagShopping,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    title: Text(
+                      "Order ID: ${viewModel.orders[index].orderNumber}",
+                      style: AppStyles.textBold15,
+                    ),
+                    subtitle: Text(
+                      "Date: ${viewModel.orders[index].createdAt.toString().substring(0, 10)}",
+                      style: AppStyles.textMedium12,
+                    ),
+                    trailing: Text(
+                      viewModel.orders[index].status,
+                      style: AppStyles.textBold15,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

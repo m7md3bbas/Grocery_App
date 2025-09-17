@@ -5,7 +5,7 @@ FutureOr<String?> getRedirect(BuildContext context, GoRouterState state) async {
   final login = state.matchedLocation == RouteDirName.signIn;
 
   if (isAuthanticated != AuthStatus.authenticated && !login) {
-    return RouteDirName.signIn;
+    return RouteDirName.authWelcome;
   }
   if (isAuthanticated == AuthStatus.authenticated && login) {
     return RouteDirName.home;

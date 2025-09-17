@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grocery_app/core/routes/route_dir_name.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
+import 'package:grocery_app/core/utils/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
 import 'package:grocery_app/features/auth/view/auth_login.dart';
 import 'package:grocery_app/features/auth/view/auth_register.dart';
@@ -14,7 +15,6 @@ import 'package:grocery_app/features/favorite/view/favorite_view.dart';
 import 'package:grocery_app/features/home/model/category_model.dart';
 import 'package:grocery_app/features/home/model/product_model.dart';
 import 'package:grocery_app/features/home/view/home_view.dart';
-import 'package:grocery_app/features/home/view/home_view_body.dart';
 import 'package:grocery_app/features/home/view/product_details.dart';
 import 'package:grocery_app/features/onboarding/views/onboarding_view.dart';
 import 'package:grocery_app/features/order/model/order_model.dart';
@@ -31,7 +31,8 @@ part 'redirect.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: RouteDirName.signIn,
+    initialLocation: RouteDirName.authWelcome,
+
     redirect: (context, state) => getRedirect(context, state),
     routes: [
       GoRoute(
@@ -78,7 +79,7 @@ class AppRouter {
 
       GoRoute(
         name: AppRouteName.authWelcome,
-        path: RouteDirName.auth,
+        path: RouteDirName.authWelcome,
         builder: (context, state) => const AuthWelcome(),
       ),
       GoRoute(

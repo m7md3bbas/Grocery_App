@@ -1,7 +1,7 @@
 class RouteDirName {
   static const initial = '/';
   static const onBoarding = '/onboarding';
-  static const auth = '/auth';
+  static const authWelcome = '/authWelcome';
   static const signUp = '/signUp';
   static const signIn = '/signIn';
   static const home = '/home';
