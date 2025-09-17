@@ -10,7 +10,6 @@ import 'package:grocery_app/features/auth/viewmodel/auth_view_model.dart';
 import 'package:grocery_app/features/cart/viewmodel/cart_view_model.dart';
 import 'package:grocery_app/features/favorite/viewmodel/favorite_view_model.dart';
 import 'package:grocery_app/features/home/model/product_model.dart';
-import 'package:grocery_app/features/home/view/widgets/product_section.dart';
 import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
@@ -49,7 +48,8 @@ class ProductItem extends StatelessWidget {
 
             CachedNetworkImage(
               imageUrl: product.image!,
-              placeholder: (ctx, url) => const Center(child: LoadingGridItem()),
+              placeholder: (ctx, url) =>
+                  CircularProgressIndicator(color: AppColors.primary),
               errorWidget: (ctx, url, error) =>
                   const Icon(Icons.broken_image, color: Colors.grey),
 
@@ -154,7 +154,7 @@ class ProductItem extends StatelessWidget {
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withValues(alpha: 0.7),
         ),
         child: context.watch<FavoriteViewModel>().isInFavoriteById(product.id)
             ? const Icon(Icons.favorite, color: AppColors.primary)
@@ -169,7 +169,7 @@ class ProductItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       child: CircleAvatar(
         radius: 18,
-        backgroundColor: AppColors.primary.withOpacity(0.1),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
         child: Icon(icon, color: AppColors.primary),
       ),
     );
@@ -194,7 +194,6 @@ class ProductItem extends StatelessWidget {
   }
 
   void _handleIncrease(BuildContext context, ProductModel product) {
-    final userId = locator<AuthViewModel>().getCurrentUser()!.id;
     final cartVm = context.read<CartViewModel>();
     final currentQuantity = cartVm.getQuantity(product);
 

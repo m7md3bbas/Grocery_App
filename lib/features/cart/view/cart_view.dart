@@ -25,6 +25,10 @@ class CartView extends StatelessWidget {
       builder: (context, cartVM, child) {
         return Scaffold(
           appBar: AppBar(
+            leading: BackButton(
+              color: Colors.black,
+              onPressed: () => context.pop(),
+            ),
             title: const Text("Shopping Cart"),
             centerTitle: true,
             backgroundColor: Colors.white,
@@ -41,7 +45,14 @@ class CartView extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset("assets/images/home/emptyCart.png"),
+                        CachedNetworkImage(
+                          errorWidget: (ctx, url, error) =>
+                              const Icon(Icons.error),
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(),
+                          imageUrl:
+                              "https://ajfypfrfjjkpbnqnsiix.supabase.co/storage/v1/object/public/appImages/images/home/emptyCart.png",
+                        ),
                         Text("Your cart is empty", style: AppStyles.textBold20),
                         Text(
                           "Add some items to your cart",
@@ -113,7 +124,7 @@ class CartView extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -225,7 +236,7 @@ class CartView extends StatelessWidget {
                 totalPrice: total,
               );
 
-              if (orderId != null) {
+              if (orderId != null && context.mounted) {
                 await context.read<OrderViewModel>().addOrderItems(
                   orderId: orderId,
                   items: cartVM.cartItems
@@ -241,37 +252,41 @@ class CartView extends StatelessWidget {
                 );
               }
 
-              await context
-                  .read<PaymentViewModel>()
-                  .newPayment(
-                    payment: PaymentModel(
-                      orderId: orderId!,
-                      userId: locator<AuthViewModel>().getCurrentUser()!.id,
-                      amount: total,
-                      method: "cash",
-                      status: "Paid",
-                    ),
-                  )
-                  .then((value) {
-                    if (value) {
-                      context
-                          .read<OrderViewModel>()
-                          .updateOrderStatus(
-                            orderId: orderId,
-                            status: "Completed",
-                            paymentStatus: "Paid",
-                          )
-                          .then(
-                            (value) => ShowToast.showSuccess("Payment success"),
-                          )
-                          .then(
-                            (value) =>
-                                context.read<CartViewModel>().clearCart(),
-                          );
-                    } else {
-                      ShowToast.showError("Payment canceled");
-                    }
-                  });
+              if (context.mounted) {
+                await context
+                    .read<PaymentViewModel>()
+                    .newPayment(
+                      payment: PaymentModel(
+                        orderId: orderId!,
+                        userId: locator<AuthViewModel>().getCurrentUser()!.id,
+                        amount: total,
+                        method: "cash",
+                        status: "Paid",
+                      ),
+                    )
+                    .then((value) {
+                      if (value && context.mounted) {
+                        context
+                            .read<OrderViewModel>()
+                            .updateOrderStatus(
+                              orderId: orderId,
+                              status: "Completed",
+                              paymentStatus: "Paid",
+                            )
+                            .then(
+                              (value) =>
+                                  ShowToast.showSuccess("Payment success"),
+                            )
+                            .then(
+                              (value) => context.mounted
+                                  ? context.read<CartViewModel>().clearCart()
+                                  : null,
+                            );
+                      } else {
+                        ShowToast.showError("Payment canceled");
+                      }
+                    });
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,

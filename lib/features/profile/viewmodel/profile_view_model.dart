@@ -101,7 +101,6 @@ class ProfileViewModel extends ChangeNotifier {
   Future<void> getProfile({required String userId}) async {
     try {
       user = await profileRepo.getProfile(userId: userId);
-      print(user?.image);
       _setSuccess();
     } on Failure catch (e) {
       _setError(e.errorMessage);

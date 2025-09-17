@@ -147,7 +147,7 @@ class ProductDetailScreen extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -175,7 +175,7 @@ class ProductDetailScreen extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.1),
+                        color: Colors.grey.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -191,8 +191,8 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: product.quantity > 0
-                            ? Colors.green.withOpacity(0.1)
-                            : Colors.red.withOpacity(0.1),
+                            ? Colors.green.withValues(alpha: 0.1)
+                            : Colors.red.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -279,10 +279,7 @@ class ProductDetailScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           _circleButton(Icons.remove, () {
-                            final userId = context
-                                .read<AuthViewModel>()
-                                .getCurrentUser()!
-                                .id;
+                            context.read<AuthViewModel>().getCurrentUser()!.id;
                             if (quantity > 1) {
                               cartVm.updateQuantity(
                                 productId: product.id,
@@ -309,7 +306,7 @@ class ProductDetailScreen extends StatelessWidget {
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: isLoading
@@ -336,7 +333,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 : Icons.check,
                             () {
                               if (quantity < product.quantity) {
-                                final userId = context
+                                context
                                     .read<AuthViewModel>()
                                     .getCurrentUser()!
                                     .id;
@@ -360,7 +357,7 @@ class ProductDetailScreen extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: product.quantity > 0
                               ? () {
-                                  final userId = context
+                                  context
                                       .read<AuthViewModel>()
                                       .getCurrentUser()!
                                       .id;
@@ -418,7 +415,7 @@ class ProductDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -440,7 +437,7 @@ class ProductDetailScreen extends StatelessWidget {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
+          color: AppColors.primary.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, color: AppColors.primary, size: 18),

@@ -47,8 +47,6 @@ class FavoriteViewModel extends ChangeNotifier {
     required String userId,
   }) async {
     try {
-      final oldList = List<FavoriteModel>.from(favoriteList);
-
       favoriteList.removeWhere((f) => f.id == favoriteId);
       notifyListeners();
 

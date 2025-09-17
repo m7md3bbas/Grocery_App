@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
@@ -100,7 +99,7 @@ class _SginInSectionState extends State<SginInSection> {
                       email: email.text,
                       password: password.text,
                     );
-                    if (isSuccess) {
+                    if (isSuccess && context.mounted) {
                       context.pushReplacementNamed(AppRouteName.home);
                     } else {
                       ShowToast.showError(viewModel.error);

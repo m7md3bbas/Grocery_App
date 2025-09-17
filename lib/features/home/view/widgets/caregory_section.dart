@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
+import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
 import 'package:grocery_app/features/home/viewmodel/home_view_model.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +38,12 @@ class CaregorySection extends StatelessWidget {
                         backgroundColor: Color(color),
                         radius: 50,
                         child: SvgPicture.network(
+                          errorBuilder: (context, error, stackTrace) =>
+                              Icon(Icons.error),
+                          placeholderBuilder: (context) =>
+                              CircularProgressIndicator(
+                                color: AppColors.primary,
+                              ),
                           category.image!,
                           height: 50,
                           width: 40,

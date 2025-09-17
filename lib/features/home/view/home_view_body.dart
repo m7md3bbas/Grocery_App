@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
@@ -140,7 +139,7 @@ class HomeViewBody extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       GestureDetector(
-                        onTap: () => context.goNamed(AppRouteName.cart),
+                        onTap: () => context.pushNamed(AppRouteName.cart),
 
                         child: Icon(
                           FontAwesomeIcons.bagShopping,

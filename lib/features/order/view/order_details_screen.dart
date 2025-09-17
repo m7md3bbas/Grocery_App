@@ -108,7 +108,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                         ),
                                       )
                                       .then((value) {
-                                        if (value) {
+                                        if (value && context.mounted) {
                                           context
                                               .read<OrderViewModel>()
                                               .updateOrderStatus(
@@ -122,7 +122,11 @@ class OrderDetailsScreen extends StatelessWidget {
                                                       "successfully paid",
                                                     ),
                                               )
-                                              .then((_) => context.pop());
+                                              .then(
+                                                (_) => context.mounted
+                                                    ? context.pop()
+                                                    : null,
+                                              );
                                         } else {
                                           ShowToast.showError(
                                             "Payment Failed or Canceled",

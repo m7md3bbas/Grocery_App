@@ -25,6 +25,9 @@ class SignIn extends StatelessWidget {
           child: Column(
             children: [
               CachedNetworkImage(
+                errorWidget: (ctx, url, error) => const Icon(Icons.error),
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 2,
                 imageUrl: AppImages.auth,

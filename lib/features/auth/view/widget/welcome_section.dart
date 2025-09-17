@@ -34,7 +34,7 @@ class WelcomeSection extends StatelessWidget {
                   .read<AuthViewModel>()
                   .loginWithGoogle();
 
-              if (isSuccess) {
+              if (isSuccess && context.mounted) {
                 context.pushNamed(AppRouteName.home);
               }
             },

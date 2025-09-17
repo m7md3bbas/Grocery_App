@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
 import 'package:grocery_app/features/home/model/category_model.dart';
 import 'package:grocery_app/features/home/view/widgets/product_item.dart';

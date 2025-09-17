@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
+import 'package:grocery_app/features/home/view/widgets/product_section.dart';
 import 'package:grocery_app/features/home/viewmodel/home_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +20,8 @@ class CarouselSection extends StatelessWidget {
             items: viewModel.carosualImages
                 .map(
                   (e) => CachedNetworkImage(
+                    errorWidget: (ctx, url, error) => const Icon(Icons.error),
+                    placeholder: (context, url) => LoadingGridItem(),
                     fit: BoxFit.cover,
                     width: double.infinity,
                     imageUrl: e,

@@ -21,7 +21,6 @@ class OrderService {
     );
 
     final data = response.data as List<dynamic>;
-    print(data);
     return data.map((json) => OrderModel.fromJson(json)).toList();
   }
 

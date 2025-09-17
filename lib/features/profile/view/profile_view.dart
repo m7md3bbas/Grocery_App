@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
@@ -61,7 +59,7 @@ class ProfileView extends StatelessWidget {
                                     } else {
                                       final picked = await viewModel
                                           .pickImage();
-                                      if (picked) {
+                                      if (picked && context.mounted) {
                                         final result = await viewModel
                                             .uploadProfileImg(
                                               userId: context
@@ -82,7 +80,8 @@ class ProfileView extends StatelessWidget {
                                     }
                                   },
                                   child: CircleAvatar(
-                                    radius: 50,
+                                    foregroundColor: AppColors.primaryDark,
+                                    radius: 55,
                                     backgroundColor: Colors.grey.shade300,
                                     backgroundImage:
                                         viewModel.user?.image != null &&
@@ -106,18 +105,36 @@ class ProfileView extends StatelessWidget {
                                 GestureDetector(
                                   onTap: () async {
                                     final picked = await viewModel.pickImage();
-                                    if (picked) {
+                                    if (picked && context.mounted) {
                                       await viewModel.uploadProfileImg(
                                         userId: context
                                             .read<AuthViewModel>()
                                             .getCurrentUser()!
                                             .id,
                                       );
+
+                                      context.mounted
+                                          ? context
+                                                .read<ProfileViewModel>()
+                                                .getProfile(
+                                                  userId: context
+                                                      .read<AuthViewModel>()
+                                                      .getCurrentUser()!
+                                                      .id,
+                                                )
+                                                .then(
+                                                  (_) => ShowToast.showSuccess(
+                                                    "Image updated successfully",
+                                                  ),
+                                                )
+                                          : null;
                                     }
                                   },
 
                                   child: viewModel.isProfileLoading
-                                      ? SizedBox.shrink()
+                                      ? CircularProgressIndicator(
+                                          color: AppColors.primary,
+                                        )
                                       : CircleAvatar(
                                           radius: 16,
                                           backgroundColor:
@@ -192,9 +209,11 @@ class ProfileView extends StatelessWidget {
                                     "Sign out",
                                     () async {
                                       await viewModel.logout().then(
-                                        (value) => context.goNamed(
-                                          AppRouteName.authWelcome,
-                                        ),
+                                        (value) => context.mounted
+                                            ? context.goNamed(
+                                                AppRouteName.authWelcome,
+                                              )
+                                            : null,
                                       );
                                     },
                                   ),

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/di/dependancy_injection.dart';
 import 'package:grocery_app/core/widgets/toast/flutter_toast.dart';
@@ -97,28 +96,48 @@ class FavoriteView extends StatelessWidget {
       key: ValueKey(product.id),
       onDismissed: (direction) => onRemove(),
       background: Container(
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(12),
+        ),
         padding: const EdgeInsets.only(right: 20),
         alignment: Alignment.centerRight,
-        color: Colors.red,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       direction: DismissDirection.endToStart,
-      child: ListTile(
-        leading: CachedNetworkImage(
-          imageUrl: product.image ?? "",
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          errorWidget: (ctx, url, error) =>
-              const Icon(Icons.broken_image, color: Colors.grey),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.1),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
         ),
-        title: Text(
-          product.title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(
-          product.description ?? "",
-          style: const TextStyle(color: Colors.grey),
+        child: ListTile(
+          leading: CachedNetworkImage(
+            placeholder: (context, url) => const CircularProgressIndicator(),
+
+            imageUrl: product.image ?? "",
+            width: 50,
+            height: 50,
+            fit: BoxFit.cover,
+            errorWidget: (ctx, url, error) =>
+                const Icon(Icons.broken_image, color: Colors.grey),
+          ),
+          title: Text(
+            product.title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+            product.description ?? "",
+            style: const TextStyle(color: Colors.grey),
+          ),
         ),
       ),
     );

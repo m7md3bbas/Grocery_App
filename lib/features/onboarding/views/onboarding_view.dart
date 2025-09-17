@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/core/routes/app_router.dart';
 import 'package:grocery_app/core/routes/route_name.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_color_styles.dart';
 import 'package:grocery_app/core/utils/constants/styles/app_text_style.dart';
@@ -73,7 +72,9 @@ class OnboardingView extends StatelessWidget {
                     onPressed: () async {
                       if (ref.currentPage == ref.onboardingModel.length - 1) {
                         await SharedPref.setSeenOnboarding();
-                        context.goNamed(AppRouteName.authWelcome);
+                        if (context.mounted) {
+                          context.goNamed(AppRouteName.authWelcome);
+                        }
                       } else {
                         controller.nextPage(
                           duration: const Duration(milliseconds: 300),
