@@ -37,7 +37,9 @@ class WelcomeSection extends StatelessWidget {
                   .loginWithGoogle();
               if (result) {
                 context.goNamed(AppRouteName.home);
-              } else {}
+              } else {
+                ShowToast.showError("Failed to login with google");
+              }
             },
             iconColor: AppColors.primary,
             title: "Continue with Google",
@@ -46,7 +48,7 @@ class WelcomeSection extends StatelessWidget {
           ),
           CustomCardAuth(
             iconColor: AppColors.background,
-            onTap: () => GoRouter.of(context).push(AppRouteName.signUp),
+            onTap: () => context.pushNamed(AppRouteName.signUp),
             title: "Create an account",
             icon: FontAwesomeIcons.user,
             color: AppColors.primary,
@@ -56,7 +58,7 @@ class WelcomeSection extends StatelessWidget {
             children: [
               Text("Don't have an account ?", style: AppStyles.textMedium15),
               TextButton(
-                onPressed: () => GoRouter.of(context).push(AppRouteName.signIn),
+                onPressed: () => context.pushNamed(AppRouteName.signIn),
                 child: Text(
                   "Sign In",
                   style: AppStyles.textMedium15.copyWith(

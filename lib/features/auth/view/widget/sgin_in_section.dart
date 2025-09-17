@@ -133,9 +133,8 @@ class _SginInSectionState extends State<SginInSection> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => GoRouter.of(
-                      context,
-                    ).pushReplacement(AppRouteName.signUp),
+                    onPressed: () =>
+                        context.pushReplacementNamed(AppRouteName.signUp),
                     child: Text(
                       "Sign Up",
                       style: AppStyles.textMedium15.copyWith(
